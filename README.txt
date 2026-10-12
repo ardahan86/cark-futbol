@@ -1,16 +1,17 @@
-Milli Takım Draft — düzeltilmiş paket
+FUTBOL DRAFT — TAM OYUN PAKETİ
+
+Paket; çark/draft, 11 kişilik kadro görünümü, lig/fikstür, puan tablosu ve önceki Futbol Draft sitesindeki maç motoru kodunu içerir.
 
 Dosyalar:
-- index.html: Sayfa yapısı düzeltildi; yinelenen status-message kaldırıldı.
-- app.js: Üyelik/giriş, yönetici paneli, oda oluşturma, açık odaları listeleme ve Odaya Katıl işlemi.
-- styles.css: Bu HTML için stil dosyası.
-- firestore.rules: Yeni yönetici UID ve bekleme odasına katılma izinleri.
+- index.html
+- app.js
+- styles.css
+- players.json
+- firestore.rules
 
-Kurulum:
-1) Mevcut firebase-config.js dosyanı koru; pakette bilerek yok. Firebase ayarların silinmesin.
-2) firebase-config.js içindeki ADMIN_UID değeri niWBY7pf8FbJG76yqsv219dMEdR2 olmalı.
-3) index.html, app.js ve styles.css dosyalarını GitHub deposunda bu pakettekilerle değiştir ve Commit changes yap.
-4) firestore.rules içeriğini Firebase Console > Firestore Database > Rules bölümüne koyup Publish et.
-5) Siteyi Ctrl+F5 ile yenile. Yönetici hesabıyla oda oluştur, başka hesapla Odaya Katıl düğmesini dene.
+ÖNEMLİ PROJE NOTU:
+Bu, dünkü Futbol Draft motorunun mevcut kaynak kodunu temel alır. app.js içinde Firebase yapılandırması futbol-draft-f596c projesine aittir. Bugün üzerinde çalıştığımız Milli Takım Draft sitesi farklı Firebase projesi (cark-futbol) ve farklı veri yapısı kullanıyor. Bu nedenle dosyaları mevcut cark-futbol projesine körlemesine yüklemeyin; aksi hâlde kullanıcı hesapları/odalar ayrı projede kalır.
+Bu paket motorun tam kaynak kodunu ve arayüzünü bir arada sunar; Firebase projesi ve veri şeması birleştirmesi ayrıca yapılmalıdır.
 
-Not: Bu paket mevcut futbolcu veritabanını değiştirmez. Oda sistemi Firestore'da games koleksiyonunu kullanır.
+Maç motoru önceki kaynak dosyadaki teamProfile(), simulateScore(), takım güç/defans/hücum/ülke ve kaptan bonusları, maç istatistikleri ve lig fikstür sonuç akışını korur.
+Oyuncu JSON dosyası önceki projedeki kaynak veridir; değiştirilmemiştir.
