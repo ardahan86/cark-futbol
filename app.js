@@ -117,7 +117,7 @@ $("signup-form").addEventListener("submit", async (event) => {
         try { await userCredential.user.delete(); } catch {}
       }
     } else {
-      showMessage(firebaseError(error),"error");
+    showMessage(`${error.code || "HATA"}: ${error.message || firebaseError(error)}`, "error");
     }
   } finally { setBusy(form,false); }
 });
