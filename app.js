@@ -3,8 +3,10 @@ import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   onAuthStateChanged, signOut, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
 import {
-  getFirestore, doc, getDoc, setDoc, runTransaction, serverTimestamp
+  getFirestore, doc, getDoc, setDoc, runTransaction, serverTimestamp,
+  collection, addDoc, query, where, onSnapshot, updateDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { firebaseConfig, ADMIN_UID } from "./firebase-config.js";
 
@@ -156,6 +158,82 @@ onAuthStateChanged(auth, async (user) => {
     showLoggedOut();
   }
 });
+// Futbol Draft oda sistemi
+const createRoomForm = $("create-room-form");
+const roomList = $("room-list");
 
-/* FUTBOL DRAFT - ODA SİSTEMİ BAŞLANGICI */
-const roomSystemReady = true;
+if (createRoomForm && roomList) {
+  createRoomForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const user = auth.currentUser;
+    if (!user || user.uid !== ADMIN_UID) {
+      showMessage("Oda oluşturmak için yönetici hesabıyla giriş yapmalısın.", "error");
+      return;
+    }
+
+    const roomName = $("room-name").value.trim();
+    const capacity = Number($("room-capacity").value);
+
+    if (!roomName || capacity < 2 || capacity > 6) {
+      showMessage("Oda adını ve oyuncu kapasitesini kontrol et.", "error");
+      return;
+    }
+
+    const submitButton = createRoomForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+
+    try {
+      const roomCode = Math.random().toString(36).slice(2, 8).toUpperCase();
+
+      await addDoc(collection(db, "games"), {
+        name: roomName,
+        code: roomCode,
+        capacity,
+        status: "waiting",
+        createdBy: user.uid,
+        createdAt: serverTimestamp(),
+        players: [{
+          uid: user.uid,
+          username: $("display-username").textContent
+        }]
+      });
+
+      createRoomForm.reset();
+      showMessage(`Oda oluşturuldu. Oda kodu: ${roomCode}`);
+    } catch (error) {
+      showMessage(firebaseError(error), "error");
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  onSnapshot(
+    query(collection(db, "games"), where("status", "==", "waiting")),
+    (snapshot) => {
+      roomList.replaceChildren();
+
+      if (snapshot.empty) {
+        roomList.textContent = "Henüz açık oyun odası yok.";
+        return;
+      }
+
+      snapshot.forEach((roomDoc) => {
+        const room = roomDoc.data();
+        const item = document.createElement("div");
+        item.className = "room-item";
+
+        const title = document.createElement("strong");
+        title.textContent = room.name || "İsimsiz oda";
+
+        const details = document.createElement("p");
+        details.textContent =
+          `Kod: ${room.code || "—"} · Kapasite: ${room.capacity || 2} oyuncu`;
+
+        item.append(title, details);
+        roomList.appendChild(item);
+      });
+    },
+    (error) => showMessage(firebaseError(error), "error")
+  );
+}
