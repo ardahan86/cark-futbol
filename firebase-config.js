@@ -1,5 +1,5 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyA0DTDIbxspQ8USWv_mFa5arHxyvP8MbME",
+  apiKey: "AIzaSyAOTDTIbxspQ8USWv_mFa5arHxyyP8MbME",
   authDomain: "cark-futbol.firebaseapp.com",
   projectId: "cark-futbol",
   storageBucket: "cark-futbol.firebasestorage.app",
