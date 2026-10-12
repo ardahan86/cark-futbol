@@ -7,4 +7,4 @@ export const firebaseConfig = {
   appId: "1:645214195153:web:e1ca7030dc41a98a9be4f0"
 };
 
-export const ADMIN_UID = "ADMIN_UID_BURAYA";
+export const ADMIN_UID = "5qVNzrbKNSbmiwg1I6fRAnLA8wt2";
