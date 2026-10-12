@@ -13,6 +13,7 @@ import { firebaseConfig, ADMIN_UID } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+let isRegistering = false;
 
 const badges = [
   {id:"shield-lime",icon:"🛡️",label:"Yeşil Kalkan"},
@@ -94,6 +95,7 @@ $("signup-form").addEventListener("submit", async (event) => {
   const badge=badges[Math.floor(Math.random()*badges.length)];
   let userCredential;
   try {
+    isRegistering = true;
     userCredential = await createUserWithEmailAndPassword(auth,email,password);
     const user=userCredential.user;
     await runTransaction(db, async (tx) => {
@@ -109,6 +111,7 @@ $("signup-form").addEventListener("submit", async (event) => {
     });
     form.reset();
     showMessage("Üyeliğin oluşturuldu. Takım arman hesabına kaydedildi.","success");
+    window.location.reload();
   } catch(error) {
     if(error.message==="USERNAME_TAKEN") {
       showMessage("Bu kullanıcı adı zaten kullanılıyor. Başka bir ad seç.","error");
@@ -145,6 +148,7 @@ $("logout-button").addEventListener("click", async () => {
 });
 
 onAuthStateChanged(auth, async (user) => {
+ if (isRegistering) return;
   if(!user){showLoggedOut();return;}
   try {
     const snap=await getDoc(doc(db,"users",user.uid));
