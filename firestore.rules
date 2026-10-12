@@ -2,20 +2,23 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function isRoomMember(roomId) {
-      return signedIn() && exists(/databases/$(database)/documents/rooms/$(roomId))
-        && request.auth.uid in get(/databases/$(database)/documents/rooms/$(roomId)).data.memberOrder;
+    function isAdmin() { return signedIn() && request.auth.uid == "niWBY7pf8FbJG76yqsv219dMEdR2"; }
+    match /users/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if signedIn() && request.auth.uid == userId;
+      allow update: if signedIn() && request.auth.uid == userId;
+      allow delete: if isAdmin();
     }
     match /rooms/{roomId} {
-      allow read: if signedIn() && (request.auth.uid in resource.data.memberOrder || resource.data.status == 'waiting');
+      allow read: if signedIn();
       allow create: if signedIn() && request.resource.data.ownerUid == request.auth.uid;
       allow update: if signedIn() && (
+        isAdmin() ||
         request.auth.uid == resource.data.ownerUid ||
-        (request.auth.uid in resource.data.memberOrder
-          && request.resource.data.memberOrder == resource.data.memberOrder
-          && request.resource.data.ownerUid == resource.data.ownerUid)
+        (request.auth.uid in resource.data.memberOrder && resource.data.status in ["waiting", "drafting", "finished"])
       );
-      allow delete: if signedIn() && request.auth.uid == resource.data.ownerUid;
+      allow delete: if signedIn() && (isAdmin() || request.auth.uid == resource.data.ownerUid);
     }
+    match /{document=**} { allow read, write: if false; }
   }
 }
