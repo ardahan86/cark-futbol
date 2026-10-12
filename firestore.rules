@@ -1,26 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() {
-      return request.auth != null;
-    }
+    function signedIn() { return request.auth != null; }
     function isAdmin() {
-      return signedIn() && request.auth.uid == "ADMIN_UID_BURAYA";
+      return signedIn() && request.auth.uid == "niWBY7pf8FbJG76yqsv219dMEdR2";
     }
-
-    // Kullanıcı adları kayıt sırasında bir kez rezerve edilir; herkes okuyabilir,
-    // ancak yalnızca giriş yapan kullanıcı kendi adına yeni rezervasyon yapabilir.
     match /usernames/{usernameKey} {
-      allow read: if true;
+      allow read: if signedIn();
       allow create: if signedIn()
         && !exists(/databases/$(database)/documents/usernames/$(usernameKey))
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.username is string;
       allow update, delete: if false;
     }
-
-    // Profil bilgileri giriş yapan kullanıcılara okunabilir; kullanıcı yalnızca
-    // kendi profilini ilk kez oluşturabilir. Arma ve kullanıcı adı sonradan değiştirilemez.
     match /users/{userId} {
       allow read: if signedIn();
       allow create: if signedIn()
@@ -30,20 +22,32 @@ service cloud.firestore {
         && request.resource.data.usernameLower is string
         && request.resource.data.badgeId is string
         && request.resource.data.badgeIcon is string
+        && request.resource.data.badgeLabel is string
         && request.resource.data.email == request.auth.token.email
         && !exists(/databases/$(database)/documents/users/$(userId));
-      allow update, delete: if false;
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['username', 'usernameLower', 'badgeId', 'badgeIcon', 'badgeLabel']);
+      allow delete: if isAdmin();
     }
-
-    // Oyun odaları sonraki aşamada eklenecek. Yönetici dışındaki kullanıcılar
-    // oda oluşturma/iptal etme yetkisine sahip olmayacak.
     match /games/{gameId} {
       allow read: if signedIn();
-      allow create, update, delete: if isAdmin();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        signedIn()
+        && resource.data.status == "waiting"
+        && request.resource.data.status == resource.data.status
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["players"])
+        && resource.data.players is list
+        && request.resource.data.players is list
+        && resource.data.capacity is int
+        && resource.data.players.size() < resource.data.capacity
+        && request.resource.data.players.size() == resource.data.players.size() + 1
+        && request.resource.data.players.hasAll(resource.data.players)
+        && request.resource.data.players[request.resource.data.players.size() - 1].uid == request.auth.uid
+      );
     }
-
-    match /{document=**} {
-      allow read, write: if false;
-    }
+    match /{document=**} { allow read, write: if false; }
   }
 }

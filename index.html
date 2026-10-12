@@ -1,123 +1,16 @@
 <!doctype html>
-<html lang="tr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101827">
-  <title>Milli Takım Draft</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="#"><span class="brand-mark">⚽</span><span>Milli Takım <b>Draft</b></span></a>
-      <span class="live-pill"><i></i> Oyun platformu</span>
-    </header>
-
-    <main>
-      <section id="welcome" class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">KENDİ KADRONU KUR · LİGDE YARIŞ</p>
-          <h1>Şansını çevir.<br><span>Takımını kur.</span></h1>
-          <p class="intro">12 milli takımın yıldızlarından kendi kadronu oluştur, taktiğini belirle ve şampiyonluk için yarış.</p>
-          <div class="feature-row">
-            <span>🎡 Ülke çarkı</span><span>🧩 18 kişilik kadro</span><span>🏆 Lig simülasyonu</span>
-          </div>
-        </div>
-        <div class="ball-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="big-ball">⚽</div><div class="mini-tag tag-one">12 ÜLKE</div><div class="mini-tag tag-two">11 + 7</div></div>
-      </section>
-
-      <section id="auth-section" class="auth-grid">
-        <div class="panel auth-panel">
-          <div class="panel-heading"><div><p class="eyebrow">HOŞ GELDİN</p><h2>Hesabına giriş yap</h2></div><span class="panel-icon">↗</span></div>
-          <form id="login-form">
-            <label>E-posta<input id="login-email" type="email" autocomplete="email" placeholder="ornek@mail.com" required></label>
-            <label>Şifre<input id="login-password" type="password" autocomplete="current-password" placeholder="Şifren" required minlength="6"></label>
-            <button class="btn btn-primary" type="submit">Giriş yap <span>→</span></button>
-            <button id="reset-password" class="text-button" type="button">Şifremi unuttum</button>
-          </form>
-        </div>
-        <div class="panel auth-panel signup-panel">
-          <div class="panel-heading"><div><p class="eyebrow">YENİ OYUNCU</p><h2>Hemen üye ol</h2></div><span class="panel-icon">＋</span></div>
-          <form id="signup-form">
-            <label>Kullanıcı adı<input id="signup-username" type="text" autocomplete="username" placeholder="Örn. GolKrali" required minlength="3" maxlength="18" pattern="[A-Za-z0-9_]+" title="3-18 karakter; İngilizce harf, sayı ve alt çizgi"></label>
-            <label>E-posta<input id="signup-email" type="email" autocomplete="email" placeholder="ornek@mail.com" required></label>
-            <label>Şifre<input id="signup-password" type="password" autocomplete="new-password" placeholder="En az 6 karakter" required minlength="6"></label>
-            <button class="btn btn-primary" type="submit">Hesap oluştur <span>→</span></button>
-          </form>
-          <p class="tiny-note">Şifren Firebase Authentication tarafından güvenli şekilde yönetilir.</p>
-        </div>
-      </section>
-
-      <section id="dashboard" class="hidden">
-        <div class="dashboard-head">
-          <div><p class="eyebrow">OYUNCU MERKEZİ</p><h2>Hoş geldin, <span id="display-username"></span></h2><p class="muted">Takım kimliğin hesabına kaydedildi.</p></div>
-          <button id="logout-button" class="btn btn-ghost">Çıkış yap</button>
-        </div>
-        <div class="dashboard-grid">
-          <div class="panel profile-panel">
-            <p class="eyebrow">TAKIM KİMLİĞİN</p>
-            <div id="chosen-badge" class="chosen-badge">🛡️</div>
-            <h3 id="profile-name"></h3>
-            <p class="muted">Arman kalıcı olarak hesabına bağlıdır.</p>
-          </div>
-          <div class="panel">
-            <p class="eyebrow">SONRAKİ ADIM</p>
-            <h3>Oyun odaları hazırlanıyor</h3>
-            <p class="muted">Yönetici oda açtığında burada görünecek. Önce üyelik ve takım kimliği altyapısını test ediyoruz.</p>
-            <div class="feature-list"><span>✓ E-posta ile üyelik</span><span>✓ Kalıcı kullanıcı adı</span><span>✓ Kalıcı takım arması</span><span>◷ Çark ve lig sistemi sonraki aşamada</span></div>
-          </div>
-        </div>
-       
-<div id="admin-panel" class="panel admin-panel hidden">
-  <div class="panel-heading">
-    <div>
-      <p class="eyebrow">YÖNETİCİ ALANI</p>
-      <h2>Oyun yönetimi</h2>
-    </div>
-    <span class="admin-chip">ADMIN</span>
-  </div>
-
-  <p class="muted">Yeni oyun odası oluştur ve mevcut odaları yönet.</p>
-
-  <form id="create-room-form">
-    <label>
-      Oda adı
-      <input id="room-name" type="text" maxlength="40"
-        placeholder="Örn. Akşam Draft Ligi" required>
-    </label>
-
-    <label>
-      Oyuncu kapasitesi
-      <select id="room-capacity">
-        <option value="2">2 oyuncu</option>
-        <option value="3">3 oyuncu</option>
-        <option value="4" selected>4 oyuncu</option>
-        <option value="5">5 oyuncu</option>
-        <option value="6">6 oyuncu</option>
-      </select>
-    </label>
-
-    <button class="btn btn-primary" type="submit">
-      Oda oluştur <span>＋</span>
-    </button>
-  </form>
-
-  <div class="room-list-section">
-    <h3>Oyun odaları</h3>
-    <div id="room-list">
-      <p class="muted">Odalar yükleniyor...</p>
-    </div>
-  </div>
-</div>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101827"><title>Milli Takım Draft</title><link rel="stylesheet" href="styles.css"></head>
+<body><div class="app-shell">
+<header class="topbar"><a class="brand" href="#"><span class="brand-mark">⚽</span><span>Milli Takım <b>Draft</b></span></a><span class="live-pill"><i></i> Oyun platformu</span></header>
+<main>
+<section id="welcome" class="hero"><div class="hero-copy"><p class="eyebrow">KENDİ KADRONU KUR · LİGDE YARIŞ</p><h1>Şansını çevir.<br><span>Takımını kur.</span></h1><p class="intro">12 milli takımın yıldızlarından kendi kadronu oluştur, taktiğini belirle ve şampiyonluk için yarış.</p><div class="feature-row"><span>🎡 Ülke çarkı</span><span>🧩 18 kişilik kadro</span><span>🏆 Lig simülasyonu</span></div></div><div class="ball-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="big-ball">⚽</div><div class="mini-tag tag-one">12 ÜLKE</div><div class="mini-tag tag-two">11 + 7</div></div></section>
+<section id="auth-section" class="auth-grid">
+<div class="panel auth-panel"><div class="panel-heading"><div><p class="eyebrow">HOŞ GELDİN</p><h2>Hesabına giriş yap</h2></div><span class="panel-icon">↗</span></div><form id="login-form"><label>E-posta<input id="login-email" type="email" autocomplete="email" placeholder="ornek@mail.com" required></label><label>Şifre<input id="login-password" type="password" autocomplete="current-password" placeholder="Şifren" required minlength="6"></label><button class="btn btn-primary" type="submit">Giriş yap <span>→</span></button><button id="reset-password" class="text-button" type="button">Şifremi unuttum</button></form></div>
+<div class="panel auth-panel signup-panel"><div class="panel-heading"><div><p class="eyebrow">YENİ OYUNCU</p><h2>Hemen üye ol</h2></div><span class="panel-icon">＋</span></div><form id="signup-form"><label>Kullanıcı adı<input id="signup-username" type="text" autocomplete="username" placeholder="Örn. GolKrali" required minlength="3" maxlength="18" pattern="[A-Za-z0-9_]+" title="3-18 karakter; İngilizce harf, sayı ve alt çizgi"></label><label>E-posta<input id="signup-email" type="email" autocomplete="email" placeholder="ornek@mail.com" required></label><label>Şifre<input id="signup-password" type="password" autocomplete="new-password" placeholder="En az 6 karakter" required minlength="6"></label><button class="btn btn-primary" type="submit">Hesap oluştur <span>→</span></button></form><p class="tiny-note">Şifren Firebase Authentication tarafından güvenli şekilde yönetilir.</p></div>
 </section>
-<div id="status-message" class="status-message hidden" role="status"></div>
-</main>
-      </section>
-      <div id="status-message" class="status-message hidden" role="status"></div>
-    </main>
-    <footer><span>Milli Takım Draft</span><span>İlk geliştirme aşaması · Üyelik ve profil</span></footer>
-  </div>
-  <script type="module" src="app.js"></script>
-</body>
-</html>
+<section id="dashboard" class="hidden"><div class="dashboard-head"><div><p class="eyebrow">OYUNCU MERKEZİ</p><h2>Hoş geldin, <span id="display-username"></span></h2><p class="muted">Takım kimliğin hesabına kaydedildi.</p></div><button id="logout-button" class="btn btn-ghost">Çıkış yap</button></div>
+<div class="dashboard-grid"><div class="panel profile-panel"><p class="eyebrow">TAKIM KİMLİĞİN</p><div id="chosen-badge" class="chosen-badge">🛡️</div><h3 id="profile-name"></h3><p class="muted">Arman kalıcı olarak hesabına bağlıdır.</p></div><div class="panel"><p class="eyebrow">OYUN ODALARI</p><h3>Açık oyun odaları</h3><p class="muted">Bir odaya katılabilir veya yöneticiysen yeni oda oluşturabilirsin.</p><div class="feature-list"><span>✓ E-posta ile üyelik</span><span>✓ Kalıcı kullanıcı adı</span><span>✓ Kalıcı takım arması</span></div></div></div>
+<div id="admin-panel" class="panel admin-panel hidden"><div class="panel-heading"><div><p class="eyebrow">YÖNETİCİ ALANI</p><h2>Oyun yönetimi</h2></div><span class="admin-chip">ADMIN</span></div><p class="muted">Yeni oyun odası oluştur ve mevcut odaları yönet.</p><form id="create-room-form"><label>Oda adı<input id="room-name" type="text" maxlength="40" placeholder="Örn. Akşam Draft Ligi" required></label><label>Oyuncu kapasitesi<select id="room-capacity"><option value="2">2 oyuncu</option><option value="3">3 oyuncu</option><option value="4" selected>4 oyuncu</option><option value="5">5 oyuncu</option><option value="6">6 oyuncu</option></select></label><button class="btn btn-primary" type="submit">Oda oluştur <span>＋</span></button></form></div>
+<div class="panel room-list-section"><h3>Açık oyun odaları</h3><div id="room-list"><p class="muted">Giriş yaptıktan sonra odalar yüklenecek.</p></div></div>
+</section>
+</main><div id="status-message" class="status-message hidden" role="status"></div><footer><span>Milli Takım Draft</span><span>Üyelik · Profil · Oyun odaları</span></footer></div><script type="module" src="app.js"></script></body></html>
