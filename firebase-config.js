@@ -1,13 +1,10 @@
-// Firebase Console > Project settings > Your apps bölümündeki config bilgilerini buraya yapıştır.
 export const firebaseConfig = {
-  apiKey: "BURAYA_API_KEY",
-  authDomain: "BURAYA_PROJECT_ID.firebaseapp.com",
-  projectId: "BURAYA_PROJECT_ID",
-  storageBucket: "BURAYA_PROJECT_ID.appspot.com",
-  messagingSenderId: "BURAYA_MESSAGING_SENDER_ID",
-  appId: "BURAYA_APP_ID"
+  apiKey: "AIzaSyA0DTDIbxspQ8USWv_mFa5arHxyvP8MbME",
+  authDomain: "cark-futbol.firebaseapp.com",
+  projectId: "cark-futbol",
+  storageBucket: "cark-futbol.firebasestorage.app",
+  messagingSenderId: "645214195153",
+  appId: "1:645214195153:web:e1ca7030dc41a98a9be4f0"
 };
 
-// İlk yönetici hesabını oluşturup giriş yaptıktan sonra Firebase Authentication'dan UID değerini al.
-// Aynı UID'yi app.js içindeki ADMIN_UID ve firestore.rules içindeki ADMIN_UID alanlarına yaz.
 export const ADMIN_UID = "ADMIN_UID_BURAYA";
