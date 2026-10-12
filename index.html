@@ -68,10 +68,51 @@
             <div class="feature-list"><span>✓ E-posta ile üyelik</span><span>✓ Kalıcı kullanıcı adı</span><span>✓ Kalıcı takım arması</span><span>◷ Çark ve lig sistemi sonraki aşamada</span></div>
           </div>
         </div>
-        <div id="admin-panel" class="panel admin-panel hidden">
-          <div class="panel-heading"><div><p class="eyebrow">YÖNETİCİ ALANI</p><h2>Oyun yönetimi</h2></div><span class="admin-chip">ADMIN</span></div>
-          <p class="muted">Yönetici hesabı doğrulandı. Oda oluşturma, iptal etme ve maç başlatma işlevlerini sonraki geliştirme aşamasında ekleyeceğiz.</p>
-        </div>
+       
+<div id="admin-panel" class="panel admin-panel hidden">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">YÖNETİCİ ALANI</p>
+      <h2>Oyun yönetimi</h2>
+    </div>
+    <span class="admin-chip">ADMIN</span>
+  </div>
+
+  <p class="muted">Yeni oyun odası oluştur ve mevcut odaları yönet.</p>
+
+  <form id="create-room-form">
+    <label>
+      Oda adı
+      <input id="room-name" type="text" maxlength="40"
+        placeholder="Örn. Akşam Draft Ligi" required>
+    </label>
+
+    <label>
+      Oyuncu kapasitesi
+      <select id="room-capacity">
+        <option value="2">2 oyuncu</option>
+        <option value="3">3 oyuncu</option>
+        <option value="4" selected>4 oyuncu</option>
+        <option value="5">5 oyuncu</option>
+        <option value="6">6 oyuncu</option>
+      </select>
+    </label>
+
+    <button class="btn btn-primary" type="submit">
+      Oda oluştur <span>＋</span>
+    </button>
+  </form>
+
+  <div class="room-list-section">
+    <h3>Oyun odaları</h3>
+    <div id="room-list">
+      <p class="muted">Odalar yükleniyor...</p>
+    </div>
+  </div>
+</div>
+</section>
+<div id="status-message" class="status-message hidden" role="status"></div>
+</main>
       </section>
       <div id="status-message" class="status-message hidden" role="status"></div>
     </main>
