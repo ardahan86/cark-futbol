@@ -156,3 +156,6 @@ onAuthStateChanged(auth, async (user) => {
     showLoggedOut();
   }
 });
+
+/* FUTBOL DRAFT - ODA SİSTEMİ BAŞLANGICI */
+const roomSystemReady = true;
