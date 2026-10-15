@@ -1,28 +1,12 @@
-ÇARK FUTBOL - GÜNCELLENEN DOSYALAR
+Çark Futbol - Minimal güncelleme
 
-Bu pakette:
-- Misafir kullanıcı adı + oda kodu formu
-- Oda kodu ile odaya katılma
-- Dizilişin 4-2-3-1 olarak sabitlenmesi
-- 300 futbolculuk players.json (veri değerleri değiştirilmedi)
+Bu paket yalnızca app.js içerir; mevcut index.html ve firebase-config.js dosyalarını değiştirmez.
 
-ÖNEMLİ YÜKLEME TALİMATI:
-GitHub deposunda yalnızca index.html ve app.js dosyalarını bu pakettekilerle değiştirin.
-styles.css ve players.json bu pakette uyumluluk için bulunur; değiştirmek zorunda değilsiniz.
-firebase-config.js dosyasını bu paketten yüklemeyin/değiştirmeyin; kendi Firebase API anahtarlarınız ve ADMIN_UID değerinizin bulunduğu mevcut dosyayı koruyun.
-firestore.rules dosyasını da değiştirmeyin.
+Uygulama davranışı:
+- Kadro yalnızca 11 ilk 11 oyuncusundan oluşur.
+- Yedek seçimi yapılmaz; yedek alanı gizlenir.
+- Futbolcu, doğal mevkiine uygun boş ilk 11 kutusuna otomatik yerleştirilir.
+- Oda oluşturma, odaya katılma, admin kontrolü, Firebase oda işlemleri, 30 saniyelik seçim süresi ve sayısal oda kodu mantığı bu app.js dosyasında korunmuştur.
 
-Uygulama GitHub Pages üzerinde canlı Firebase projesiyle uçtan uca test edilmemiştir. Yükleme sonrası misafir girişi, oda kodu ve draft işlemleri test edilmelidir.
-
-Güncelleme: Oda kodları 6 rakamdan oluşur. Katılım alanı yalnızca rakam kabul eder. Çarkta kulüp geldikten sonra futbolcu seçimi için 30 saniye verilir; süre dolarsa seçim PAS sayılır ve sıra sonraki oyuncuya geçer.
-
-
-Yeni draft kuralları:
-- İlk 11 mevki yuvaları doğal pozisyona göre otomatik dolar; kaleciden başlama sırası zorunlu değildir.
-- Her oyuncu yalnızca kendi ilk 11'indeki boş doğal mevki için futbolcu seçebilir. Sağ ve sol kanat ayrı ilk 11 mevkiidir; stoper ve merkez orta sahada ikişer yuva vardır.
-- Bir oyuncu 11 ilk 11 yuvasını tamamlayınca diğer oyuncuların ilk 11'leri tamamlanana kadar sırası otomatik atlanır.
-- Çarktan gelen takımda oyuncunun o aşamada doldurabileceği boş mevkiye uygun futbolcu yoksa el PAS sayılır.
-- PAS, KORUMA, TAKAS ve 30 saniyelik seçim zaman aşımında sıra, ilk 11'ini/kadrosunu tamamlamış oyuncuları otomatik atlayarak ilerler.
-
-
-Güncel kadro kuralı: yalnızca 11 kişilik ilk 11 vardır, yedek seçimi kaldırılmıştır. Futbolcu seçildiğinde doğal mevkiine uygun boş ilk 11 kutusuna otomatik yerleştirilir. Bütün oyuncular ilk 11’lerini tamamlayınca draft biter.
+Yükleme: GitHub'daki mevcut app.js dosyasını bu dosyayla değiştirin. firebase-config.js dosyasına dokunmayın.
+Not: JavaScript sözdizimi kontrol edilmiştir; canlı Firebase ortamında test edilmemiştir.
