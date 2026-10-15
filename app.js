@@ -69,16 +69,38 @@ async function pickPlayer(){const raw=players.find(p=>p.id===$('playerSelect').v
 async function protectPlayer(){
  if(!room||room.status!=='finished'||(room.postDraftPhase||'protection')!=='protection'||room.protectionDone?.[user.uid]){msg('Koruma aşaması şu anda açık değil.',true);return}
  const mine=myPicks();if(!mine.length){msg('Önce kadrona futbolcu ekle.',true);return}
- try{const secretRef=doc(db,'roomSecrets',`${roomId}_${user.uid}`),snap=await getDoc(secretRef),prior=snap.exists()?snap.data().protectedIds||[]:[];const available=Math.max(0,Math.min(rightsFor('protectionRights'),3)-prior.length);let selected=[...prior];
- const box=$('specialActions');let picker=box.querySelector('.protection-picker');if(!picker){picker=document.createElement('div');picker.className='protection-picker';box.append(picker)}
- picker.innerHTML=`<h3>Korunacak oyuncuları seç</h3><p class="hint">İsimlere tıklayarak en fazla ${available} yeni oyuncu seç. Daha önce korunanlar işaretlidir.</p><div>${mine.map(p=>{const isPrior=prior.includes(p.id);return `<button type="button" class="btn secondary" data-protect-player="${esc(p.id)}" style="display:flex;justify-content:space-between;align-items:center;width:100%;margin:5px 0;text-align:left;${isPrior?'border:2px solid #37b56b;background:rgba(55,181,107,.18);':''}"><span><b>${esc(p.name)}</b><small style="display:block">${esc(p.position)}${isPrior?' · Korumalı':''}</small></span><span class="protect-check">${isPrior?'✓':''}</span></button>`}).join('')}</div><div class="button-row"><button type="button" class="btn primary" id="saveProtectionSelection" ${available<1?'disabled':''}>Seçilenleri koru</button><button type="button" class="btn secondary" id="cancelProtectionSelection">Kapat</button></div>`;
- const update=()=>{picker.querySelectorAll('[data-protect-player]').forEach(b=>{const id=b.dataset.protectPlayer,on=selected.includes(id);b.style.border=on?'2px solid #37b56b':'';b.style.background=on?'rgba(55,181,107,.18)':'';b.querySelector('.protect-check').textContent=on?'✓':''});picker.querySelector('#saveProtectionSelection').disabled=selected.filter(id=>!prior.includes(id)).length<1||selected.filter(id=>!prior.includes(id)).length>available};
- picker.querySelectorAll('[data-protect-player]').forEach(b=>b.onclick=()=>{const id=b.dataset.protectPlayer;if(selected.includes(id)){if(prior.includes(id)){msg('Daha önce kaydedilen koruma kaldırılamaz.',true);return}selected=selected.filter(x=>x!==id)}else if(selected.filter(x=>!prior.includes(x)).length<available)selected.push(id);else{msg(`En fazla ${available} yeni oyuncu koruyabilirsin.`,true);return}update()});
- picker.querySelector('#cancelProtectionSelection').onclick=()=>picker.remove();
- picker.querySelector('#saveProtectionSelection').onclick=async()=>{try{const chosen=selected.filter(id=>!prior.includes(id));if(!chosen.length){msg('Korunacak oyuncu seçmedin.',true);return}const latest=await getDoc(secretRef),latestPrior=latest.exists()?latest.data().protectedIds||[]:[],limit=Math.max(0,Math.min(rightsFor('protectionRights'),3)-latestPrior.length);if(chosen.length>limit||chosen.some(id=>latestPrior.includes(id))){msg('Koruma hakların değişmiş. Seçimini yenile.',true);return}await setDoc(secretRef,{roomId,uid:user.uid,protectedIds:[...latestPrior,...chosen],updatedAt:Date.now()});picker.remove();msg(`${chosen.length} futbolcu korumaya alındı. Şimdi “Koruma seçimini tamamla” düğmesine bas.`)}catch(e){msg('Koruma kaydedilemedi: '+e.message,true)}};
+ try{
+  const secretRef=doc(db,'roomSecrets',`${roomId}_${user.uid}`),snap=await getDoc(secretRef),prior=snap.exists()?snap.data().protectedIds||[]:[];
+  const available=Math.max(0,Math.min(rightsFor('protectionRights'),3)-prior.length);
+  let selected=[...prior];
+  const box=$('specialActions');let picker=box.querySelector('.protection-picker');if(!picker){picker=document.createElement('div');picker.className='protection-picker';box.append(picker)}
+  picker.innerHTML=`<h3>Korunacak oyuncuları seç</h3><p class="hint">İsimlere tıklayarak ${available>0?`en fazla ${available} futbolcu`: 'koruma hakkın olmadığı için seçim yapmadan'} ilerleyebilirsin. Seçtiklerin yeşil işaretlenir. Seçimini bitirdiğinde aşağıdaki “Koruma seçimini tamamla” düğmesine bas.</p><div>${mine.map(p=>{const isPrior=prior.includes(p.id);return `<button type="button" class="btn secondary" data-protect-player="${esc(p.id)}" style="display:flex;justify-content:space-between;align-items:center;width:100%;margin:5px 0;text-align:left;${isPrior?'border:2px solid #37b56b;background:rgba(55,181,107,.18);':''}" ${isPrior?'disabled':''}><span><b>${esc(p.name)}</b><small style="display:block">${esc(p.position)}${isPrior?' · Korumalı':''}</small></span><span class="protect-check">${isPrior?'✓':''}</span></button>`}).join('')}</div><p class="hint" id="protectionSelectionCount"></p>`;
+  const update=()=>{picker.dataset.selectedIds=JSON.stringify(selected.filter(id=>!prior.includes(id)));picker.querySelectorAll('[data-protect-player]').forEach(b=>{const id=b.dataset.protectPlayer,on=selected.includes(id);b.style.border=on?'2px solid #37b56b':'';b.style.background=on?'rgba(55,181,107,.18)':'';b.querySelector('.protect-check').textContent=on?'✓':''});const count=selected.filter(id=>!prior.includes(id)).length;const counter=picker.querySelector('#protectionSelectionCount');if(counter)counter.textContent=`Seçilen yeni oyuncu: ${count}/${available}`};
+  picker.querySelectorAll('[data-protect-player]').forEach(b=>b.onclick=()=>{const id=b.dataset.protectPlayer;if(selected.includes(id)){selected=selected.filter(x=>x!==id)}else if(selected.filter(x=>!prior.includes(x)).length<available)selected.push(id);else{msg(`En fazla ${available} yeni oyuncu koruyabilirsin.`,true);return}update()});
+  update();picker.scrollIntoView?.({behavior:'smooth',block:'nearest'});
  }catch(e){msg('Koruma seçimi açılamadı: '+e.message,true)}
 }
-async function finishProtectionSelection(){try{await runTransaction(db,async tx=>{const snap=await tx.get(roomRef),d=snap.data();if(d.status!=='finished'||(d.postDraftPhase||'protection')!=='protection')throw new Error('Koruma aşaması açık değil.');const done={...(d.protectionDone||{}),[user.uid]:true};const all=(d.memberOrder||[]).every(id=>done[id]);tx.update(roomRef,{protectionDone:done,postDraftPhase:all?'swaps':'protection',updatedAt:serverTimestamp()})});msg('Koruma seçimin tamamlandı. '+((room.postDraftPhase||'protection')==='protection'?'Diğer oyuncular bekleniyor.':''))}catch(e){msg(e.message||'Koruma aşaması tamamlanamadı.',true)}}
+async function finishProtectionSelection(){
+ try{
+  const picker=$('specialActions').querySelector('.protection-picker');
+  const selected=picker?JSON.parse(picker.dataset.selectedIds||'[]'):[];
+  const secretRef=doc(db,'roomSecrets',`${roomId}_${user.uid}`);
+  const latest=await getDoc(secretRef),prior=latest.exists()?latest.data().protectedIds||[]:[];
+  const chosen=selected.filter(id=>!prior.includes(id));
+  const available=Math.max(0,Math.min(rightsFor('protectionRights'),3)-prior.length);
+  if(chosen.length>available)throw new Error('Koruma hakkın kadar oyuncu seçmelisin. Lütfen seçimini yeniden yap.');
+  if(chosen.length){await setDoc(secretRef,{roomId,uid:user.uid,protectedIds:[...prior,...chosen],updatedAt:Date.now()},{merge:true});}
+  let all=false;
+  await runTransaction(db,async tx=>{
+   const snap=await tx.get(roomRef);if(!snap.exists())throw new Error('Oda bulunamadı.');const d=snap.data();
+   if(d.status!=='finished'||(d.postDraftPhase||'protection')!=='protection')throw new Error('Koruma aşaması açık değil.');
+   if(d.protectionDone?.[user.uid])throw new Error('Koruma seçimini zaten tamamladın.');
+   const done={...(d.protectionDone||{}),[user.uid]:true};all=(d.memberOrder||[]).every(id=>done[id]);
+   tx.update(roomRef,{protectionDone:done,postDraftPhase:all?'swaps':'protection',updatedAt:serverTimestamp()});
+  });
+  picker?.remove();msg(`Koruma seçimin tamamlandı${chosen.length?`; ${chosen.length} futbolcu korundu`:''}. `+(all?'Takas aşaması açıldı.':'Diğer oyuncuların koruma seçimlerini tamamlaması bekleniyor.'));
+ }catch(e){msg(e.message||'Koruma aşaması tamamlanamadı.',true)}
+}
 async function swapPlayer(){
  if(!room||room.status!=='finished'||room.postDraftPhase!=='swaps'||room.swapConfirmed?.[user.uid]){msg('Takas aşaması açık değil veya takaslarını zaten onayladın.',true);return}
  const used=(room.swapRequests||[]).filter(x=>x.fromUid===user.uid);const available=Math.max(0,Math.min(3,rightsFor('swapRights'))-used.length);if(available<1){msg('Kullanılabilir takas hakkın kalmadı.',true);return}
