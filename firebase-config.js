@@ -9,4 +9,4 @@ export const firebaseConfig = {
 };
 
 // Mevcut yönetici hesabının Firebase Authentication UID'si
-export const ADMIN_UID = "niWBY7pf8FbJG76yqsv219dMEdR2";
+export const ADMIN_UID = "BahpBQ1anNRV0TPwv3Z5lHPycGm2";
