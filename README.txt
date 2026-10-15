@@ -4,10 +4,7 @@ Bu pakette:
 - Misafir kullanıcı adı + oda kodu formu
 - Oda kodu ile odaya katılma
 - Dizilişin 4-2-3-1 olarak sabitlenmesi
-- İlk 11 seçim sırası: 1 kaleci, 1 sağ bek, 1 sol bek, 2 stoper, 2 merkez orta saha, 1 ofansif orta saha, 1 sağ kanat, 1 sol kanat, 1 santrfor
-- İlk 11 tamamlanınca 7 yedek sırası: 1 kaleci, 1 sağ/sol bek, 1 stoper, 1 orta saha, 1 ofansif orta saha, 1 sağ/sol kanat, 1 santrfor
-- Çarkta gelen kulüpte gereken mevki yoksa o seçim hakkı PAS sayılır ve sıra ilerler
-- 18 kişilik kadrosu tamamlanan oyuncunun çark çevirmesi engellenir
+- Mevki gruplarına göre ilk 11 seçim kutuları ve 7 yedek yuvası
 - 300 futbolculuk players.json (veri değerleri değiştirilmedi)
 
 ÖNEMLİ YÜKLEME TALİMATI:
@@ -17,3 +14,5 @@ firebase-config.js dosyasını bu paketten yüklemeyin/değiştirmeyin; kendi Fi
 firestore.rules dosyasını da değiştirmeyin.
 
 Uygulama GitHub Pages üzerinde canlı Firebase projesiyle uçtan uca test edilmemiştir. Yükleme sonrası misafir girişi, oda kodu ve draft işlemleri test edilmelidir.
+
+Güncelleme: Oda kodları 6 rakamdan oluşur. Katılım alanı yalnızca rakam kabul eder. Çarkta kulüp geldikten sonra futbolcu seçimi için 30 saniye verilir; süre dolarsa seçim PAS sayılır ve sıra sonraki oyuncuya geçer.
