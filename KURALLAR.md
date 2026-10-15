@@ -13,7 +13,7 @@
 - Kulüp havuzu adları: Galatasaray, Fenerbahçe, Beşiktaş, Trabzonspor, Barcelona, Real Madrid, Inter, PSG, Bayern Münih, Manchester City, Arsenal, Liverpool, Atlético Madrid, Juventus ve Manchester United.
 - Her çevirmede sıra sahibi çarkı bir kez çevirir.
 - PAS gelirse oyuncu seçilmez ve sıra sonraki uygun oyuncuya geçer.
-- KORUMA ve TAKAS hakları kişi başına en fazla ikişer kez kazanılabilir. İlgili hak sınırı dolmuşken aynı dilim gelirse sonuç PAS sayılır.
+- KORUMA hakları kişi başına en fazla 3, TAKAS hakları toplamda en fazla 3 olabilir. Draft başladığında her oyuncuya 1 kullanılabilir takas hakkı otomatik verilir; çarktan kazanılan her TAKAS hakkı bu toplam sınırına dahildir. İlgili hak sınırı dolmuşken aynı dilim gelirse sonuç PAS sayılır.
 
 ## 3. Futbolcu seçimi ve ilk 11
 - Oyuncu verilerinin kaynağı `players.json` dosyasıdır; puanlar kullanıcı onayı olmadan değiştirilmez.
@@ -23,7 +23,7 @@
 - Sabit diziliş 4-2-3-1 ve yuva sırası şöyledir: kaleci, sağ bek, stoper, stoper, sol bek, merkez orta saha, merkez orta saha, ofansif orta saha, sağ kanat, sol kanat, santrfor.
 - Bir oyuncu aynı mevki için tanımlı boş yuva kalmadığında o mevkiye ikinci/ek futbolcu yerleştiremez. İki stoper ve iki merkez orta saha yuvası vardır.
 - Gelen kulüpte kullanılmamış ve boş doğal mevkiye uyabilecek futbolcu yoksa sonuç PAS sayılır; sıra geçer.
-- Futbolcu seçimi için 30 saniye vardır. Süre içinde seçim yapılmazsa PAS sayılır ve sıra geçer.
+- Futbolcu seçimi için süre sınırı yoktur. Oyuncu seçimini tamamlayana kadar sıra kendisinde kalır.
 - İlk 11'ini tamamlayan oyuncu seçim yapamaz; diğer oyuncuların ilk 11'lerini tamamlamasını bekler. Tüm oyuncuların 11'i tamamlandığında draft biter.
 - Yedek oyuncu seçimi yoktur.
 - Futbolcu güç/puan değerleri seçim ekranında gösterilmez; maç motorunda kullanılır.
@@ -34,7 +34,7 @@
 - Her koruma hakkı için kendi kadrosundan bir futbolcu seçilebilir; aynı futbolcu birden fazla kez korunamaz.
 
 ## 5. Takas
-- TAKAS sonucu bir takas hakkı kazandırır; toplam kazanılabilecek hak sayısı ikiyle sınırlıdır. Çarkta 2 TAKAS dilimi bulunur.
+- Her oyuncu başlangıçta 1 kullanılabilir takas hakkına sahiptir. TAKAS sonucu bir ek hak kazandırır; başlangıç hakkı dahil toplam hak sayısı 3 ile sınırlıdır. Çarkta 2 TAKAS dilimi bulunur.
 - Takas yalnızca tüm ilk 11'ler tamamlandıktan sonra yapılabilir.
 - Takas, oyuncunun kendi kadrosundaki bir futbolcu ile rakip kadrodaki aynı doğal mevkideki futbolcu arasında yapılır.
 - Hedeflenen rakip futbolcu korumalıysa takas gerçekleşmez ancak kullanılan takas hakkı harcanır.

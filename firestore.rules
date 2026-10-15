@@ -40,7 +40,7 @@ service cloud.firestore {
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['picks','pendingPick','turnIndex','status','draftStage','lastSpin','updatedAt']))
           || (resource.data.status == 'waiting' && request.resource.data.status == 'drafting'
             && request.auth.uid == resource.data.ownerUid
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','turnIndex','picks','pendingPick','updatedAt'])))
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','turnIndex','picks','pendingPick','swapRights','swapRightsEarned','updatedAt'])))
         && request.resource.data.ownerUid == resource.data.ownerUid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'picks','pendingPick','turnIndex','status','draftStage','lastSpin','protectionRights','swapRights',

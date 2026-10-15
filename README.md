@@ -28,3 +28,6 @@ Bu paket, Çark Futbol'un GitHub Pages üzerinde yayınlanması için gereken si
 
 ## Sınır
 Bu ortamdan senin Firebase projenin canlı oturumuna bağlanıp gerçek admin girişi, oda oluşturma ve misafir katılımını uçtan uca çalıştırmak mümkün değil. Bu nedenle paket için “canlı sistemde hatasız çalıştığı garanti edildi” iddiasında bulunmuyorum. Canlı davranış ayrıca Firebase yapılandırmasına ve yayımlanmış Firestore kurallarına bağlıdır.
+
+
+Son güncelleme: Futbolcu seçimi zaman sınırı kaldırıldı. Her oyuncu oda oluşturma/katılım sırasında 1 takas hakkıyla başlar; çarktan en fazla 2 ek hak kazanabilir ve toplam üst sınır 3’tür.
