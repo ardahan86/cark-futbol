@@ -19,8 +19,8 @@
 ## Firebase kurulumu
 1. Firebase Console → Authentication → Sign-in method bölümünde **Anonymous** girişini etkinleştirin.
 2. Yönetici hesabının e-posta/şifre ile giriş yapabildiğinden emin olun. Admin UID `niWBY7pf8FbJG76yqsv219dMEdR2` olarak ayarlı.
-3. `firebase-config.js` içindeki `BURAYA_API_KEY`, `BURAYA_MESSAGING_SENDER_ID`, `BURAYA_APP_ID` alanlarını kendi `cark-futbol` projenizin Web App config değerleriyle doldurun.
-4. Firestore → Rules bölümünde `firestore.rules` içeriğini yayınlayın.
+3. `firebase-config.js` dosyası gönderdiğiniz ekran görüntüsündeki Web App değerleriyle doldurulmuştur. Firebase Console > Project settings > Your apps bölümündeki değerlerle karşılaştırın.
+4. ÖNEMLİ: GitHub’a dosya yüklemek Firestore kurallarını kendiliğinden değiştirmez. Firebase Console → Firestore Database → Rules bölümünde bu paketteki `firestore.rules` dosyasının tamamını yapıştırıp Publish’e basın. Önce mevcut kuralları bir metin dosyasına yedekleyin.
 5. Dosyaları GitHub Pages deposuna yükleyin.
 
-> Not: Firebase bağlantısı, canlı Firestore projesine erişim olmadan burada uçtan uca doğrulanamaz. ZIP içindeki config alanları hâlâ yer tutucudur; gerçek değerler eklenmeden site Firebase'e bağlanmaz. Firestore kuralları üyelerin yalnızca belirli oyun alanlarını güncellemesini sağlar; tüm oyun kurallarına karşı sunucu taraflı hile önleme için ayrıca güvenilir backend/Cloud Functions gerekir.
+> Not: Canlı Firebase projesine buradan bağlanıp uçtan uca test yapamıyorum. API anahtarı ve App ID, gönderdiğiniz ekran görüntüsünden okunarak yazıldı; yüklemeden önce Firebase Console’daki değerlerle karşılaştırın. Firebase web API anahtarı istemci yapılandırmasının parçasıdır; güvenlik Firestore kurallarıyla sağlanmalıdır. Oyun kuralları için sunucu taraflı hile önleme ayrıca backend/Cloud Functions gerektirir.
