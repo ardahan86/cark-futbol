@@ -1,6 +1,6 @@
 // Firebase Console > Project settings > Your apps > cark-futbol-web
 export const firebaseConfig = {
-  apiKey: "AIzaSyA0TDTIbxspQ8USWv_mFa5arHxyyP8MbME",
+  apiKey: "AIzaSyAOTDTIbxspQ8USWv_mFa5arHxyyP8MbME",
   authDomain: "cark-futbol.firebaseapp.com",
   projectId: "cark-futbol",
   storageBucket: "cark-futbol.firebasestorage.app",
