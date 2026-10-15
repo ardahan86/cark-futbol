@@ -9,7 +9,7 @@
 - Oda sahibi veya admin draftı başlatabilir.
 
 ## 2. Çark
-- Çark 20 dilimden oluşur: 15 kulüp, 2 PAS, 2 KORUMA ve 1 TAKAS.
+- Çark 23 dilimden oluşur: 15 kulüp, 2 PAS, 4 KORUMA ve 2 TAKAS.
 - Kulüp havuzu adları: Galatasaray, Fenerbahçe, Beşiktaş, Trabzonspor, Barcelona, Real Madrid, Inter, PSG, Bayern Münih, Manchester City, Arsenal, Liverpool, Atlético Madrid, Juventus ve Manchester United.
 - Her çevirmede sıra sahibi çarkı bir kez çevirir.
 - PAS gelirse oyuncu seçilmez ve sıra sonraki uygun oyuncuya geçer.
@@ -29,12 +29,12 @@
 - Futbolcu güç/puan değerleri seçim ekranında gösterilmez; maç motorunda kullanılır.
 
 ## 4. Koruma
-- KORUMA sonucu bir koruma hakkı kazandırır; toplam kazanılabilecek hak sayısı ikiyle sınırlıdır.
-- Oyuncu kendi kadrosundaki bir futbolcuyu gizlice koruyabilir.
-- Korunan futbolcu bilgisi draft bitene kadar diğer oyunculardan gizli tutulur.
+- KORUMA sonucu bir koruma hakkı kazandırır; kişi başına toplam 3 hak kazanılabilir.
+- Korunacak futbolcu, tüm oyuncuların ilk 11 kadroları tamamlandıktan sonra seçilir.
+- Her koruma hakkı için kendi kadrosundan bir futbolcu seçilebilir; aynı futbolcu birden fazla kez korunamaz.
 
 ## 5. Takas
-- TAKAS sonucu bir takas hakkı kazandırır; toplam kazanılabilecek hak sayısı ikiyle sınırlıdır.
+- TAKAS sonucu bir takas hakkı kazandırır; toplam kazanılabilecek hak sayısı ikiyle sınırlıdır. Çarkta 2 TAKAS dilimi bulunur.
 - Takas yalnızca tüm ilk 11'ler tamamlandıktan sonra yapılabilir.
 - Takas, oyuncunun kendi kadrosundaki bir futbolcu ile rakip kadrodaki aynı doğal mevkideki futbolcu arasında yapılır.
 - Hedeflenen rakip futbolcu korumalıysa takas gerçekleşmez ancak kullanılan takas hakkı harcanır.

@@ -50,8 +50,8 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Private until the room is finished; after that everyone in the room can
-    // check protections before a swap. A player can only write their own secret.
+    // Protection selections are made after all rosters are complete.
+    // A player can only write their own protection record.
     match /roomSecrets/{secretId} {
       allow read: if isAdmin() || (signedIn() && secretId.matches('.*_' + request.auth.uid))
         || (signedIn() && resource.data.uid == request.auth.uid)
@@ -62,9 +62,9 @@ service cloud.firestore {
         && request.resource.data.roomId is string
         && roomExists(request.resource.data.roomId)
         && request.auth.uid in get(/databases/$(database)/documents/rooms/$(request.resource.data.roomId)).data.memberOrder
-        && get(/databases/$(database)/documents/rooms/$(request.resource.data.roomId)).data.status == 'drafting'
+        && get(/databases/$(database)/documents/rooms/$(request.resource.data.roomId)).data.status == 'finished'
         && request.resource.data.protectedIds is list
-        && request.resource.data.protectedIds.size() <= 2;
+        && request.resource.data.protectedIds.size() <= 3;
       allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
     }
     match /{document=**} { allow read, write: if false; }

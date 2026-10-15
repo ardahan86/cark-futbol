@@ -1,13 +1,18 @@
-Kod düzeyi kontrolleri (2026-10-15)
-- app.js: node --check başarılı.
-- players.json: geçerli JSON.
-- Futbolcu sayısı: 300.
-- Futbolcu ID'leri: 300 benzersiz ID.
-- Kulüp sayısı: 15.
-- Mevki alanları: Kaleci, Sağ bek, Stoper, Sol bek, Merkez orta saha, Ofansif orta saha, Sağ kanat, Sol kanat, Santrfor.
-- JavaScript'in HTML'de olmayan sabit ID referansları: protectBtn ve swapBtn; bunlar renderRoom() içinde dinamik olarak oluşturulur.
-- bindUI() içindeki admin giriş işlevlerini yorum satırına alan hatalı satır sonu düzeltildi.
-- Profil belgesi okuma hatası, admin arayüzünün açılmasını engellemeyecek şekilde ele alındı.
-- Firestore rules: draftStage ve lastSpin alanları oyun güncellemeleri izin listesine eklendi.
+ÇARK FUTBOL - KORUMA / TAKAS GÜNCELLEMESİ
 
-Canlı Firebase/GitHub Pages üzerinde uçtan uca test yapılmadı. Bu nedenle bu dosya, kod düzeyinde kontrol notudur; canlı sistem için kesin çalışma garantisi değildir.
+Kontroller:
+- app.js JavaScript sözdizimi: BAŞARILI
+- players.json oyuncu sayısı: 300
+- Çark dilimi sayısı: 23
+- Kulüp dilimi: 15
+- PAS dilimi: 2
+- KORUMA dilimi: 4
+- TAKAS dilimi: 2
+- Firestore koruma kaydı: yalnızca kadrolar tamamlandığında yazılabilir; en fazla 3 oyuncu.
+- Gerçek Firebase ortamında uçtan uca test yapılmadı.
+
+Kurulum:
+1. ZIP içindeki app.js, firestore.rules ve KURALLAR.md dosyalarını depo kök dizinindeki karşılıklarıyla değiştir.
+2. players.json, index.html, styles.css ve firebase-config.js dosyalarını değiştirme.
+3. firestore.rules içeriğini Firebase Console > Firestore Database > Rules bölümünde yayınla.
+4. GitHub Pages'i yenile ve önce bir test odasında dene.
