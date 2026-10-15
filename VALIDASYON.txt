@@ -1,0 +1,13 @@
+Kod düzeyi kontrolleri (2026-10-15)
+- app.js: node --check başarılı.
+- players.json: geçerli JSON.
+- Futbolcu sayısı: 300.
+- Futbolcu ID'leri: 300 benzersiz ID.
+- Kulüp sayısı: 15.
+- Mevki alanları: Kaleci, Sağ bek, Stoper, Sol bek, Merkez orta saha, Ofansif orta saha, Sağ kanat, Sol kanat, Santrfor.
+- JavaScript'in HTML'de olmayan sabit ID referansları: protectBtn ve swapBtn; bunlar renderRoom() içinde dinamik olarak oluşturulur.
+- bindUI() içindeki admin giriş işlevlerini yorum satırına alan hatalı satır sonu düzeltildi.
+- Profil belgesi okuma hatası, admin arayüzünün açılmasını engellemeyecek şekilde ele alındı.
+- Firestore rules: draftStage ve lastSpin alanları oyun güncellemeleri izin listesine eklendi.
+
+Canlı Firebase/GitHub Pages üzerinde uçtan uca test yapılmadı. Bu nedenle bu dosya, kod düzeyinde kontrol notudur; canlı sistem için kesin çalışma garantisi değildir.
