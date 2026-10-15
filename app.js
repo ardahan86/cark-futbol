@@ -5,8 +5,8 @@ import { firebaseConfig, ADMIN_UID } from './firebase-config.js';
 
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
-const CLUBS=['Galatasaray','Arsenal','Beşiktaş','Real Madrid','Juventus','Atl. Madrid','PSG','Fenerbahçe','Man. City','Bayern Münih','Inter','Trabzonspor','Liverpool','Barcelona','Man. United'];
-const WHEEL_SLICES=[...CLUBS,'PAS','PAS','KORUMA','KORUMA','TAKAS'];
+const CLUBS=["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor","Barcelona","Real Madrid","Inter","PSG","Bayern Münih","Manchester City","Arsenal","Liverpool","Atlético Madrid","Juventus","Manchester United"];
+const WHEEL_SLICES=["Galatasaray","PAS","Arsenal","Atlético Madrid","KORUMA","Beşiktaş","Real Madrid","PAS","Juventus","PSG","KORUMA","Fenerbahçe","Manchester City","Bayern Münih","Inter","TAKAS","Trabzonspor","Liverpool","Barcelona","Manchester United"];
 const COLORS=['#ed6a5a','#f4a261','#e9c46a','#8ab17d','#2a9d8f','#4d96ff','#6c63ff','#c77dff','#e76f51','#457b9d','#f28482','#90be6d','#e0a458','#6c9bd2','#d17b88','#5865a8','#2a9d8f','#2a9d8f','#a66dd4','#a66dd4'];
 let user=null,profile=null,players=[],rooms=[],roomsUnsub=null,roomUnsub=null,room=null,roomId=null,roomRef=null,toastTimer=null,selectedCountry=null,pendingSpinCountry=null,lastWheelCountry=null,lastWheelSpinAt=0;
 const isAdmin=()=>!!user&&user.uid===ADMIN_UID;
