@@ -5,7 +5,7 @@ export const firebaseConfig = {
   authDomain: "cark-futbol.firebaseapp.com",
   projectId: "cark-futbol",
   storageBucket: "cark-futbol.firebasestorage.app",
-  messagingSenderId: "BURAYA_MESSAGING_SENDER_ID",
+  messagingSenderId: "645214195153",
   appId: "1:645214195153:web:e1ca7030dc41a98a9be4f0"
 };
 export const ADMIN_UID = "BahpBQ1anNRV0TPwv3Z5lHPycGm2";
