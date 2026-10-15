@@ -9,7 +9,7 @@
 - Oda sahibi veya admin draftı başlatabilir.
 
 ## 2. Çark
-- Çark 23 dilimden oluşur: 15 kulüp, 2 PAS, 4 KORUMA ve 2 TAKAS.
+- Çark 21 dilimden oluşur: 15 kulüp, 2 PAS, 4 KORUMA ve 2 TAKAS.
 - Kulüp havuzu adları: Galatasaray, Fenerbahçe, Beşiktaş, Trabzonspor, Barcelona, Real Madrid, Inter, PSG, Bayern Münih, Manchester City, Arsenal, Liverpool, Atlético Madrid, Juventus ve Manchester United.
 - Her çevirmede sıra sahibi çarkı bir kez çevirir.
 - PAS gelirse oyuncu seçilmez ve sıra sonraki uygun oyuncuya geçer.
@@ -52,3 +52,6 @@
 - `players.json` futbolcu havuzunun tek kaynağıdır.
 - Gerçek `firebase-config.js` dosyası kullanıcıya ait proje ayarlarını içerir ve örnek yapılandırmayla değiştirilmemelidir.
 - Firestore güvenlik kuralları Firebase Console'da ayrıca yayımlanmalıdır; GitHub'a bir kural dosyası yüklemek tek başına Firebase kurallarını değiştirmez.
+
+
+Güncel seçim arayüzü: Koruma seçiminde oyuncu numarası girilmez; kadrodaki futbolcu isimlerine tıklayarak kullanılabilir koruma hakkı kadar birden fazla oyuncu seçilir ve birlikte kaydedilir. Takasta önce rakip futbolcunun, ardından aynı mevkideki kendi futbolcunun ismine tıklanır.

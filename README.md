@@ -31,3 +31,6 @@ Bu ortamdan senin Firebase projenin canlı oturumuna bağlanıp gerçek admin gi
 
 
 Son güncelleme: Futbolcu seçimi zaman sınırı kaldırıldı. Her oyuncu oda oluşturma/katılım sırasında 1 takas hakkıyla başlar; çarktan en fazla 2 ek hak kazanabilir ve toplam üst sınır 3’tür.
+
+
+Güncel seçim arayüzü: Koruma seçiminde oyuncu numarası girilmez; kadrodaki futbolcu isimlerine tıklayarak kullanılabilir koruma hakkı kadar birden fazla oyuncu seçilir ve birlikte kaydedilir. Takasta önce rakip futbolcunun, ardından aynı mevkideki kendi futbolcunun ismine tıklanır.
