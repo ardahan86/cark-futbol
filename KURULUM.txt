@@ -1,25 +1,26 @@
-ÇARK FUTBOL — TAM SİTE PAKETİ
+ÇARK FUTBOL — GÜNCELLEME PAKETİ
 
-Bu paket GitHub Pages deposunun kök dizinine yüklenecek dosyaları içerir:
-- index.html: giriş, oda, draft, kadro, kurallar ve lig arayüzü
-- app.js: Firebase akışı, çark/draft, koruma-takas aşamaları, maç motoru ve canlı anlatım
-- styles.css: arayüz ve canlı maç raporu stilleri
-- players.json: 300 kişilik oyuncu havuzu
-- firebase-config.js: bu proje için mevcut Firebase web yapılandırması ve yönetici UID
+Bu paketteki dosyalar sitenin ana dizinine yüklenmelidir:
+- index.html
+- app.js
+- styles.css
+- players.json
+- firebase-config.js
 
-GITHUB'A YÜKLEME
-1. GitHub'da ardahan86/cark-futbol deposunu aç.
-2. Depo kökündeki aynı adlı beş dosyayı bu pakettekilerle değiştir. Dosyaları bir alt klasörün içine yükleme.
-3. Değişiklikleri Commit changes ile kaydet.
-4. GitHub Pages dağıtımı tamamlanınca https://ardahan86.github.io/cark-futbol/ adresini Ctrl+F5 ile yenile.
+Güncellemeler:
+1. Koruma ve takas hakkı üst sınırı 3 olarak düzenlendi.
+2. Çark dilimlerinde 15 kulüp, 2 PAS, 2 KORUMA ve 1 TAKAS bulunur.
+3. Maç istatistikleri simülasyon başında canlı maç kaydına yazılır ve maç sürerken gösterilebilir.
+4. Eksik/eski istatistik alanları ekranda “N/A” yerine “—” olarak gösterilir.
+5. Canlı anlatım sıradan her dakika/pozisyon yerine önemli anları gösterir: goller, kurtarışlar, direkten dönenler, kornerler, yüksek kaliteli kaçan fırsatlar ve devre/maç sonu.
+6. Canlı anlatım olayları arasındaki bekleme 1,4 saniyeye çıkarıldı.
 
-KONTROLLER
-- Oyuncu listesi 300 kayıt olarak doğrulandı.
-- app.js Node sözdizimi kontrolünden geçirildi.
-- 195. satırdaki canlı maç başlangıç metninin tırnak hatası düzeltildi.
-- Admin giriş düğmesinin iki kez tetiklenmesine yol açabilecek HTML içi ikinci tıklama dinleyicisi kaldırıldı; dinleyici app.js içinden bağlanıyor.
-- Çark: 15 kulüp + 2 PAS + 2 KORUMA + 1 TAKAS = 20 dilim.
-- KORUMA ve TAKAS hakkı üst sınırı 2 ile tutarlı hale getirildi; oyuncu seçimi için zaman aşımı yoktur.
+GitHub'a yükleme:
+1. ZIP'i çıkarın.
+2. İçindeki dosyaları GitHub deposunun kök dizinine yükleyin; yeni alt klasör açmayın.
+3. Aynı isimli dosyaları değiştirip Commit changes yapın.
+4. Site açılınca Ctrl+F5 ile yenileyin.
 
-ÖNEMLİ
-Bu paket kod ve statik dosyalar açısından kontrol edilmiştir; canlı Firebase hesabında tarayıcı üzerinden uçtan uca test yapılmamıştır. Firebase Authentication, yönetici hesabı UID'si ve Firestore kuralları Firebase Console'da mevcut ayarlarını korumalıdır. Yönetici girişi reddedilirse firebase-config.js içindeki ADMIN_UID'nin gerçek yönetici hesabının UID'siyle eşleştiğini kontrol et. Firestore kurallarını bu ZIP üzerinden değiştirme.
+Notlar:
+- firebase-config.js mevcut paketteki yapılandırmasıyla korunmuştur; bu dosyayı başka bir Firebase projesinin ayarlarıyla değiştirmeyin.
+- Bu paket JavaScript sözdizimi kontrolünden geçirilmiştir; canlı Firebase ortamında uçtan uca test yapılmamıştır.
