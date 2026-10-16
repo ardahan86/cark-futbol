@@ -1,11 +1,20 @@
-Çark Futbol — sade arayüz paketi
+ÇARK FUTBOL — Yeni sade arayüz
 
-ZIP içeriği: index.html, styles.css, app.js.
+Bu paket, mevcut Çark Futbol sitesinin arayüz dosyalarını içerir:
+- index.html
+- styles.css
+- app.js
 
-Tasarım: açık gri/beyaz yüzeyler, lacivert başlıklar, yeşil ana butonlar, anlaşılır form alanları ve mobil uyumlu düzen.
+Yapılan arayüz düzenlemeleri:
+1. Ana sayfadaki “Oyun Kuralları / Nasıl oynanır?” kartı kaldırıldı.
+2. “Çarkı çevir” düğmesinin altındaki tekrar çevirme/pas açıklaması kaldırıldı.
+3. Kadro listesinin altındaki “İlk 11 oyuncularını seçim kutularından belirleyebilirsin...” açıklaması kaldırıldı.
+4. Yedek oyuncu alanı ve oyun içindeki ayrı Kurallar sekmesi korunmuştur.
+5. Mevcut oyun akışı ve Firebase bağlantı dosyası değiştirilmemiştir.
 
-app.js, kullanıcının gönderdiği güncel sürüm temel alınarak hazırlanmıştır. Ayrıca draft başlarken her oyuncuya 1 takas hakkı tanımlanır.
+Kurulum:
+- Önce GitHub deposundaki mevcut dosyaların yedeğini alın.
+- ZIP içindeki index.html, styles.css ve app.js dosyalarını depodaki aynı adlı dosyalarla değiştirin.
+- Depodaki çalışan firebase-config.js, players.json ve Firestore kurallarını değiştirmeyin.
 
-players.json, firebase-config.js ve Firestore kuralları bu pakette yoktur; depodaki mevcut sürümlerini koruyun.
-
-Kurulum: Mevcut index.html, styles.css ve app.js dosyalarını yedekleyin; ZIP içindeki üç dosyayla değiştirin. Bu paket canlı Firebase projesinde test edilmemiştir.
+Not: Bu paket canlı Firebase projesine bağlanılarak uçtan uca test edilmemiştir. app.js sözdizimi kontrolünden geçirilmiştir.
