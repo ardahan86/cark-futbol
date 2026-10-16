@@ -1,15 +1,10 @@
-ÇARK FUTBOL – BİRLEŞİK MAÇ MOTORU, CANLI ANLATIM VE ADMIN GİRİŞ DÜZELTMESİ
+ÇARK FUTBOL – GEREKLİ DOSYALAR
 
-GitHub Pages deposunda şu üç dosyayı aynı konumda değiştirin:
-- index.html
-- app.js
-- styles.css
+Bu paket index.html, app.js, styles.css, firebase-config.js ve players.json içerir.
+GitHub deposunun kök dizinine bu 5 dosyayı yükleyin. Dosyaları alt klasörün içine değil, doğrudan kök dizine koyun.
 
-Bu sürümde admin giriş düğmesinin tıklama olayı doğrudan app.js içinden bağlanır; HTML içi bağımsız handler kaldırılmıştır.
+ÖNEMLİ: firebase-config.js paketteki mevcut cark-futbol Firebase projesi yapılandırmasını ve ADMIN_UID değerini içerir. Kendi Firebase projeniz farklıysa bunu kullanmayın.
 
-Şu dosyalara dokunmayın:
-- firebase-config.js
-- firestore.rules
-- players.json
-
-Yükledikten sonra GitHub Pages'in dağıtımının bitmesini bekleyin, siteyi Ctrl+F5 ile yenileyin ve “Admin girişi” düğmesini tekrar deneyin. Bu paket sözdizimi kontrolünden geçirilmiştir; gerçek Firebase ortamında canlı uçtan uca test yapılmamıştır.
+Yükledikten sonra GitHub Pages dağıtımının bitmesini bekleyin ve sitede Ctrl+F5 yapın.
+Bu paket canlı Firebase ortamında uçtan uca test edilmemiştir. Site hâlâ açılmazsa tarayıcıda F12 > Console ekranındaki ilk kırmızı hatanın ekran görüntüsünü gönderin.
+Firestore kuralları bu pakette yok; mevcut yayımlanmış Firestore kurallarınızı değiştirmeyin.
