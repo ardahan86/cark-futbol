@@ -79,6 +79,9 @@ function simulateMatch(home,away){
     const onRate=clamp(.30+(profile.att-70)*.003+(profile.tech-70)*.002+(opp.def-70)*-.0015,.22,.49);
     let onTarget=0,goals=0,xg=0,woodwork=0,bigChances=0;
     const events=[];
+    const attackers=(profile.selected||[]).filter(p=>p&&['Santrfor','Sağ kanat','Sol kanat','Ofansif orta saha'].includes(p.position));
+    const availableAttackers=attackers.length?attackers:(profile.selected||[]).filter(Boolean);
+    const pickAttacker=()=>availableAttackers.length?availableAttackers[randInt(0,availableAttackers.length-1)]:null;
     for(let i=0;i<shots;i++){
       const minute=randInt(1,90);
       const quality=clamp(.055+(profile.att-70)*.0015+(profile.tech-70)*.001+(Math.random()*.16)+(tac.att*.045)-(opp.def-70)*.0008,.025,.42);
@@ -86,10 +89,10 @@ function simulateMatch(home,away){
       const isBig=quality>=.22&&Math.random()<.48;
       if(isBig)bigChances++;
       xg+=quality;
-      if(on){onTarget++;const saveQuality=clamp(.70+(opp.keeperDef-70)*.006-(quality-.12)*.7,.47,.88);if(Math.random()>saveQuality){goals++;events.push({minute,type:'goal',team:profile.id,quality:+quality.toFixed(3)});}else events.push({minute,type:'save',team:opp.id,attackingTeam:profile.id,quality:+quality.toFixed(3)});}
-      else if(Math.random()<.045){woodwork++;events.push({minute,type:'woodwork',team:profile.id,quality:+quality.toFixed(3)});}
+      if(on){onTarget++;const saveQuality=clamp(.70+(opp.keeperDef-70)*.006-(quality-.12)*.7,.47,.88);if(Math.random()>saveQuality){goals++;const scorer=pickAttacker();events.push({minute,type:'goal',team:profile.id,playerName:scorer?.name||null,quality:+quality.toFixed(3)});}else events.push({minute,type:'save',team:opp.id,attackingTeam:profile.id,playerName:pickAttacker()?.name||null,quality:+quality.toFixed(3)});}
+      else if(Math.random()<.045){woodwork++;events.push({minute,type:'woodwork',team:profile.id,playerName:pickAttacker()?.name||null,quality:+quality.toFixed(3)});}
       else if(Math.random()<.16)events.push({minute,type:'corner',team:profile.id,quality:+quality.toFixed(3)});
-      else events.push({minute,type:'miss',team:profile.id,quality:+quality.toFixed(3)});
+      else events.push({minute,type:'miss',team:profile.id,playerName:pickAttacker()?.name||null,quality:+quality.toFixed(3)});
     }
     return {shots,onTarget,goals,xg,bigChances,woodwork,events};
   }
@@ -217,10 +220,10 @@ function commentaryForEvent(e,home,away,homeName,awayName){
   const who=player?.name||name;
   let text='';
   switch(e.type){
-    case 'goal': text=`⚽ GOL! ${who} fileleri havalandırıyor! ${name} skoru değiştiriyor, maçta tansiyon yükseliyor!`;break;
-    case 'save': {const keeper=(team.squad||[]).find(p=>p.starter&&String(p.position||'').toLocaleLowerCase('tr-TR').includes('kaleci'));text=`🧤 ${keeper?.name||name} harika bir kurtarış yapıyor! Rakibin şutu golle sonuçlanmıyor.`;break;}
-    case 'miss': text=`😮 ${who} şansını deniyor ama top çerçeveyi bulmuyor. Oyun devam ediyor.`;break;
-    case 'woodwork': text=`😱 Direkten döndü! ${who} gole çok yaklaştı; ${name} inanılmaz bir fırsatı kaçırıyor!`;break;
+    case 'goal': text=`⚽ GOL! ${e.playerName||who} fileleri havalandırıyor! ${name} skoru değiştiriyor, maçta tansiyon yükseliyor!`;break;
+    case 'save': {const keeper=(team.squad||[]).find(p=>p.starter&&String(p.position||'').toLocaleLowerCase('tr-TR').includes('kaleci'));text=`🧤 ${keeper?.name||name} harika bir kurtarış yapıyor! ${e.playerName?e.playerName+' tarafından çekilen şut':'Rakibin şutu'} golle sonuçlanmıyor.`;break;}
+    case 'miss': text=`😮 ${e.playerName||who} şansını deniyor ama top çerçeveyi bulmuyor. Oyun devam ediyor.`;break;
+    case 'woodwork': text=`😱 Direkten döndü! ${e.playerName||who} gole çok yaklaştı; ${name} inanılmaz bir fırsatı kaçırıyor!`;break;
     case 'corner': text=`🚩 Korner! ${name} rakip ceza alanında baskıyı artırıyor.`;break;
     case 'attack': text=`${name} hücum hazırlığında. Paslar sıklaşıyor, savunma yerleşmeye çalışıyor.`;break;
     case 'possession': text='Orta saha mücadelesi kızışıyor. İki takım da oyunun kontrolünü almak istiyor.';break;
