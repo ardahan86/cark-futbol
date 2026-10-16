@@ -1,0 +1,23 @@
+ÇARK FUTBOL — BİRLEŞİK MAÇ MOTORU + CANLI MAÇ ANLATIMI
+
+Bu paket maç motoru geliştirmesini ve canlı, sıralı maç anlatımı güncellemesini tek sürümde birleştirir.
+
+İçerik:
+- app.js: geliştirilmiş maç motoru + canlı maç olay akışı
+- styles.css: canlı maç raporu görünümü için stiller
+
+Kurulum:
+1. ZIP içindeki app.js ve styles.css dosyalarını GitHub Pages deposundaki aynı adlı dosyalarla değiştirin.
+2. firebase-config.js, index.html, firestore.rules ve players.json dosyalarını değiştirmeyin.
+3. Değişiklikleri GitHub'a gönderin ve siteyi yenileyerek kontrol edin.
+
+Özellikler:
+- 4-2-3-1 ilk 11 oyuncu konumlarına göre ağırlıklı takım değerlendirmesi
+- Taktik tercihlerinin hücum, savunma ve topa sahip olma üzerindeki etkisi
+- Şut kalitesi ve kaleci kurtarışları üzerinden gol/xG/şut ilişkisi
+- Kurtarış, korner, direk, faul, kart, pas isabeti ve büyük fırsat istatistikleri
+- Firestore üzerinden ortak canlı maç dakikası, skor ve olay akışı
+- Maç bitiminde sonucun lig sonuçlarına kaydedilmesi
+
+Doğrulama:
+JavaScript sözdizimi kontrolü yapılmıştır. Canlı Firebase ortamında birden fazla kullanıcıyla uçtan uca test yapılmış değildir; kurulum sonrası gerçek bir odada test edilmelidir.
