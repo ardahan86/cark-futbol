@@ -1,10 +1,23 @@
-ÇARK FUTBOL – GEREKLİ DOSYALAR
+ÇARK FUTBOL — MAÇ MOTORU + CANLI MAÇ ANLATIMI (SON SÜRÜM)
 
-Bu paket index.html, app.js, styles.css, firebase-config.js ve players.json içerir.
-GitHub deposunun kök dizinine bu 5 dosyayı yükleyin. Dosyaları alt klasörün içine değil, doğrudan kök dizine koyun.
+Bu paket yalnızca maç motoru, maç anlatım akışı ve maç raporu görünümünü günceller. Site içeriğinin geri kalanı korunur.
 
-ÖNEMLİ: firebase-config.js paketteki mevcut cark-futbol Firebase projesi yapılandırmasını ve ADMIN_UID değerini içerir. Kendi Firebase projeniz farklıysa bunu kullanmayın.
+Paketteki dosyalar:
+- app.js: mevcut site işlevleri korunarak maç simülasyonu ve canlı anlatım/rapor akışı güncellendi.
+- styles.css: mevcut tasarım korunarak canlı anlatım ve maç sonu istatistikleri için ek stiller eklendi.
 
-Yükledikten sonra GitHub Pages dağıtımının bitmesini bekleyin ve sitede Ctrl+F5 yapın.
-Bu paket canlı Firebase ortamında uçtan uca test edilmemiştir. Site hâlâ açılmazsa tarayıcıda F12 > Console ekranındaki ilk kırmızı hatanın ekran görüntüsünü gönderin.
-Firestore kuralları bu pakette yok; mevcut yayımlanmış Firestore kurallarınızı değiştirmeyin.
+Kurulum:
+1. GitHub deposundaki app.js dosyasını bu paketteki app.js ile değiştirin.
+2. GitHub deposundaki styles.css dosyasını bu paketteki styles.css ile değiştirin.
+3. index.html, firebase-config.js, firestore.rules ve players.json dosyalarına dokunmayın.
+4. GitHub Pages dağıtımı tamamlandıktan sonra siteyi Ctrl+F5 ile yenileyin.
+
+Güncellemeler:
+- 4-2-3-1 mevki ağırlıklı takım profili ve taktik etkileri korunur.
+- Gol, kurtarış, auta giden şut, direk ve korner olayları dakika dakika sıralanır.
+- Canlı dakika, skor ve olay akışı Firestore üzerinden odadaki oyuncuların ekranlarında güncellenir.
+- Maç bitince canlı akış silinmez; nihai skor, anlatım ve temel maç istatistikleri rapor olarak görünür.
+- Sonuç mevcut lig sonuçlarına yazılır ve puan tablosu güncellenir.
+
+Kontrol:
+JavaScript sözdizimi kontrolü yapılmıştır. Canlı Firebase ortamında çok kullanıcılı uçtan uca test yapılmamıştır.
