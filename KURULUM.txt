@@ -8,12 +8,13 @@ Bu paketteki dosyalar sitenin ana dizinine yüklenmelidir:
 - firebase-config.js
 
 Güncellemeler:
-1. Koruma ve takas hakkı üst sınırı 3 olarak düzenlendi.
-2. Çark dilimlerinde 15 kulüp, 2 PAS, 2 KORUMA ve 1 TAKAS bulunur.
-3. Maç istatistikleri simülasyon başında canlı maç kaydına yazılır ve maç sürerken gösterilebilir.
-4. Eksik/eski istatistik alanları ekranda “N/A” yerine “—” olarak gösterilir.
-5. Canlı anlatım sıradan her dakika/pozisyon yerine önemli anları gösterir: goller, kurtarışlar, direkten dönenler, kornerler, yüksek kaliteli kaçan fırsatlar ve devre/maç sonu.
-6. Canlı anlatım olayları arasındaki bekleme 1,4 saniyeye çıkarıldı.
+1. Her katılımcı draft başladığında 1 koruma ve 1 takas hakkı alır.
+2. Koruma hakkının üst sınırı 2, takas hakkının üst sınırı 3'tür. Çarktan kazanılan ek haklar da bu sınırları aşamaz.
+3. Canlı istatistik paneli maç sürerken görünür; şut, isabetli şut, gol, xG, korner ve kurtarış değerleri olaylar geldikçe/dakikaya göre güncellenir.
+4. Topla oynama ve pas isabeti yüzdeleri canlı ekranda gösterilir ve maç sonu değerlerine doğru ilerler.
+5. Eski veya eksik istatistik alanları “N/A” yerine “—” gösterilir.
+6. Canlı anlatım önemli anları gösterir: goller, kurtarışlar, direkten dönenler, kornerler, yüksek kaliteli kaçan fırsatlar ve devre/maç sonu.
+7. Canlı anlatım olayları arasındaki bekleme 1,4 saniyedir.
 
 GitHub'a yükleme:
 1. ZIP'i çıkarın.
@@ -22,5 +23,6 @@ GitHub'a yükleme:
 4. Site açılınca Ctrl+F5 ile yenileyin.
 
 Notlar:
-- firebase-config.js mevcut paketteki yapılandırmasıyla korunmuştur; bu dosyayı başka bir Firebase projesinin ayarlarıyla değiştirmeyin.
-- Bu paket JavaScript sözdizimi kontrolünden geçirilmiştir; canlı Firebase ortamında uçtan uca test yapılmamıştır.
+- firebase-config.js mevcut paketteki yapılandırmasıyla korunmuştur; bunu başka bir Firebase projesinin ayarlarıyla değiştirmeyin.
+- players.json içindeki 300 futbolcu korunmuştur.
+- JavaScript sözdizimi ve ZIP bütünlüğü kontrol edilmiştir; canlı Firebase ortamında uçtan uca test yapılmamıştır.
