@@ -1,8 +1,15 @@
-Çark Futbol - başlangıç takas hakkı düzeltmesi
+ÇARK FUTBOL - İSTENEN GÜNCELLEMELER
 
-Bu pakette yalnızca app.js bulunur.
-Düzeltme: Draft başlatılırken odadaki her oyuncuya 1 başlangıç takas hakkı atanır.
-Koruma kodu, firebase-config.js ve players.json değiştirilmemiştir.
+Bu ZIP yalnızca değiştirilen iki dosyayı içerir:
+- index.html
+- app.js
 
-Kurulum: Mevcut depodaki app.js dosyasının yedeğini alın; ZIP içindeki app.js ile değiştirin.
-Not: Daha önce başlamış odalarda haklar yeniden hesaplanmaz; düzeltmenin yeni başlatılan draftlarda uygulanması için yeni bir oda/draft başlatın.
+Yapılanlar:
+1. Koruma seçiminde oda oyuncularına ait olmayan eski/bozuk koruma kayıtları kapasite hesabından çıkarıldı; 3 koruma hakkıyla 3 geçerli futbolcu korunabilmesi için seçim hesabı sağlamlaştırıldı.
+2. Ana sayfadaki “OYUN KURALLARI / Nasıl oynanır?” paneli kaldırıldı. Oda içindeki “Kurallar” sekmesi korundu.
+3. “Çarkı çevir” düğmesi altındaki 15 kulüp/PAS/KORUMA/TAKAS ve 30 saniye açıklaması kaldırıldı.
+4. Takas-koruma alanındaki aşama açıklaması ve “Korunan futbolcular...” metni kaldırıldı.
+5. “Koruma 0/3 · Takas 0/3” göstergesi daha belirgin yapıldı.
+
+Kurulum: Yalnızca bu iki dosyayı mevcut site dosyalarıyla değiştirin. styles.css, firebase-config.js, players.json ve Firebase ayarlarına dokunulmadı.
+Not: Kod sözdizimi kontrol edildi; canlı Firebase ortamında uçtan uca test yapılmadı.
