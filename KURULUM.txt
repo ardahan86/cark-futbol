@@ -1,1 +1,25 @@
-Yalnızca index.html ve app.js dosyalarını GitHub deposunun ana dizinindeki aynı adlı dosyalarla değiştirin. styles.css, firebase-config.js, firestore.rules ve players.json dosyalarını değiştirmeyin. Dağıtım tamamlandıktan sonra Ctrl+F5 yapın. JavaScript sözdizimi kontrolü yapıldı; canlı Firebase giriş testi yapılmadı.
+ÇARK FUTBOL — TAM SİTE PAKETİ
+
+Bu paket GitHub Pages deposunun kök dizinine yüklenecek dosyaları içerir:
+- index.html: giriş, oda, draft, kadro, kurallar ve lig arayüzü
+- app.js: Firebase akışı, çark/draft, koruma-takas aşamaları, maç motoru ve canlı anlatım
+- styles.css: arayüz ve canlı maç raporu stilleri
+- players.json: 300 kişilik oyuncu havuzu
+- firebase-config.js: bu proje için mevcut Firebase web yapılandırması ve yönetici UID
+
+GITHUB'A YÜKLEME
+1. GitHub'da ardahan86/cark-futbol deposunu aç.
+2. Depo kökündeki aynı adlı beş dosyayı bu pakettekilerle değiştir. Dosyaları bir alt klasörün içine yükleme.
+3. Değişiklikleri Commit changes ile kaydet.
+4. GitHub Pages dağıtımı tamamlanınca https://ardahan86.github.io/cark-futbol/ adresini Ctrl+F5 ile yenile.
+
+KONTROLLER
+- Oyuncu listesi 300 kayıt olarak doğrulandı.
+- app.js Node sözdizimi kontrolünden geçirildi.
+- 195. satırdaki canlı maç başlangıç metninin tırnak hatası düzeltildi.
+- Admin giriş düğmesinin iki kez tetiklenmesine yol açabilecek HTML içi ikinci tıklama dinleyicisi kaldırıldı; dinleyici app.js içinden bağlanıyor.
+- Çark: 15 kulüp + 2 PAS + 2 KORUMA + 1 TAKAS = 20 dilim.
+- KORUMA ve TAKAS hakkı üst sınırı 2 ile tutarlı hale getirildi; oyuncu seçimi için zaman aşımı yoktur.
+
+ÖNEMLİ
+Bu paket kod ve statik dosyalar açısından kontrol edilmiştir; canlı Firebase hesabında tarayıcı üzerinden uçtan uca test yapılmamıştır. Firebase Authentication, yönetici hesabı UID'si ve Firestore kuralları Firebase Console'da mevcut ayarlarını korumalıdır. Yönetici girişi reddedilirse firebase-config.js içindeki ADMIN_UID'nin gerçek yönetici hesabının UID'siyle eşleştiğini kontrol et. Firestore kurallarını bu ZIP üzerinden değiştirme.
