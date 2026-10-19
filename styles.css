@@ -13,7 +13,7 @@
 
 /* FUTBOL ARENA tarzı maç raporu açılır penceresi */
 #matchReport.match-report-modal{position:fixed;z-index:10000;left:50%;top:50%;transform:translate(-50%,-50%);width:min(840px,calc(100vw - 28px));max-height:88vh;overflow:auto;margin:0;padding:24px;background:linear-gradient(145deg,#152942,#0d1a2d);border:1px solid #47709b;border-radius:18px;box-shadow:0 25px 90px #000b;color:#f4f7fb}
-body:has(#matchReport:not(.hidden))::after{content:"";position:fixed;inset:0;background:#020817b8;backdrop-filter:blur(3px);z-index:9998;pointer-events:none}
+body:has(#matchReport:not(.hidden))::after{content:"";position:fixed;inset:0;background:#020817b8;z-index:9998;pointer-events:none}
 #matchReport.match-report-modal{z-index:9999}
 .match-report-close{position:sticky;top:0;float:right;margin:-8px -8px 4px 12px;border:1px solid #476585;border-radius:9px;background:#29435f;color:#fff;font-size:27px;line-height:1;width:42px;height:42px;cursor:pointer}
 #matchReport .match-report-head{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #35516e;padding:4px 0 16px;margin-bottom:16px}

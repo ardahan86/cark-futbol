@@ -1,12 +1,19 @@
-ÇARK FUTBOL — MOBİL ARAYÜZ VE MAÇ İSTATİSTİKLERİ DÜZELTMESİ
+ÇARK FUTBOL — İSTATİSTİK VE EKRAN BULANIKLIĞI DÜZELTMESİ
 
-ZIP içindeki dosyaları GitHub deposunun ana dizinine çıkarın ve aynı adlı dosyaların üzerine yazın.
+Dosyalar:
+- index.html
+- app.js
+- styles.css
+- players.json
+- firebase-config.js
 
-Güncellenenler:
-- styles.css: telefonda daha büyük dokunma alanları, yatay kaydırılabilir sabit sekmeler, tek sütun düzen, daha büyük çark/aksiyon düğmeleri, mobil maç raporu tam ekran penceresi ve güvenli alan boşlukları.
-- app.js: topa sahip olma ve pas isabeti alanları için eski/yeni kayıt anahtarı uyumluluğu; maç detay düğmesi artık seçilen maçın raporunu açar.
-- index.html, players.json ve firebase-config.js aynı proje paketinden korunmuştur.
+Düzeltmeler:
+1. Yeni maçlarda topa sahip olma yüzdesi takım gücü, pas becerisi, taktik ve maç değişkenliğine göre hesaplanır; iki tarafın toplamı %100 olur.
+2. Pas isabeti takımın pas becerisi, topa sahip olma, taktik ve maç değişkenliğine göre hesaplanır.
+3. İstatistiği hiç bulunmayan eski maçlarda sahte %50 / %75 varsayılanı gösterilmez; değer '—' olarak görünür. Eski maçın gerçek istatistiği kayıtlı değilse sonradan gerçeğe dönüştürülemez.
+4. Arka plan bulanıklığı kaldırıldı. Maç raporu kapatıldığında aynı rapor otomatik olarak tekrar açılmaz; başka bir maçın detayına basınca açılır.
 
-Yükledikten sonra GitHub Pages güncellemesini bekleyin. Telefonda siteyi yeni sekmede açın; Chrome kullanıyorsanız siteyi yeniden yükleyin ve gerekirse önbelleği temizleyin.
+Kurulum:
+ZIP içindeki dosyaları GitHub deposunun kök dizinine yükleyip aynı isimli dosyaların üzerine yazın. firebase-config.js mevcut proje ayarlarıyla korunmuştur. Ardından tarayıcıda Ctrl+Shift+R ile yenileyin.
 
-Not: İstatistik alanı geçmiş kayıtta yoksa topa sahip olma için 50/50, pas isabeti için %75/%75 varsayılanı gösterilir; bunlar gerçek maç verisi değil, eksik eski kayıtlar için görünürlük amaçlı yedek değerlerdir. Yeni simülasyonların ürettiği değerler önceliklidir. JavaScript sözdizimi ve JSON/ZIP bütünlüğü kontrol edilmelidir; canlı Firebase testi yapılmamıştır.
+Kontrol: app.js için node --check başarılı. Gerçek Firebase ortamında uçtan uca test yapılmadı.
