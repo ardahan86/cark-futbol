@@ -1,13 +1,18 @@
-ÇARK FUTBOL — NEON ÇARK GÜNCELLEMESİ
+ÇARK FUTBOL — TAKTİK VE MAÇ MOTORU GÜNCELLEMESİ
 
-1. ZIP içindeki app.js ve styles.css dosyalarını GitHub deposunun kök dizinindeki aynı adlı dosyalarla değiştirin.
-2. Değişiklikleri commit/push edin.
-3. Siteyi Ctrl+F5 ile yenileyin.
+ZIP içindeki dosyaları GitHub deposunun ana dizinine yükleyin: index.html, app.js, styles.css, players.json ve firebase-config.js.
 
-Korunanlar:
-- Çarkın mevcut WHEEL_SLICES verisi ve dilim sırası
-- Mevcut spin() ve seçim akışı
-- Firebase ayarları ve oda/draft mantığı
-- players.json (300 oyuncu)
+Bu sürümde:
+- Beş taktik maç motoruna farklı etkilerle bağlandı: Dengeli, Hücum, Savunma, Önde pres, Topa sahip olma.
+- Hücum taktiği şut ve hücum üretimini artırır ancak savunmayı zayıflatır.
+- Savunma taktiği rakibin fırsat kalitesini/isabetini düşürmeye yardımcı olur; hücum üretimi azalır.
+- Önde pres top kazanma/hücum etkisi verir, faul ve kart riskini artırır; 70. dakikadan sonra yorgunluk etkisi güçlenir.
+- Topa sahip olma taktiği topa sahip olmayı ve başarılı pas yüzdesini artırır.
+- Takım genel gücü, hücum hattı, mevkilere göre savunma ve kalecinin defansif gücü hesaplamaya katılır.
+- Maç anlatımı ve canlı istatistik akışı yoktur; maç sonunda skor ve 9 istatistik görünür. Gol ve kart olayları oyuncu adı ve dakika ile listelenir.
+- Draft başlangıç sırası her yeni draftta rastgele belirlenir ve odada ortak olarak saklanır.
+- players.json içindeki 300 futbolcu ve puanları değiştirilmemiştir. Firebase yapılandırması da aynı dosyadan korunmuştur.
 
-Bu paket yalnızca app.js ve styles.css içerir. JavaScript sözdizimi kontrolü yapıldı; canlı Firebase uçtan uca testi yapılmadı.
+Kurulum: ZIP'i çıkarın, dosyaları kök dizine yükleyip aynı isimlileri değiştirin ve Commit changes yapın. Ardından siteyi yenileyin.
+
+Kontroller: 300 futbolcu JSON doğrulaması, JavaScript sözdizimi ve ZIP bütünlüğü kontrol edilir. Canlı Firebase uçtan uca testi yapılmamıştır.
