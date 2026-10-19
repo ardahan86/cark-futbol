@@ -1,6 +1,6 @@
-ÇARK FUTBOL — FUTBOL ARENA MAÇ MOTORU ENTEGRASYONU
+ÇARK FUTBOL — MOBİL ARAYÜZ VE MAÇ İSTATİSTİĞİ DÜZELTMESİ
 
-ZIP içeriği:
+ZIP içindeki dosyaları GitHub deposunun ana dizinine yükleyin ve aynı isimli dosyaların üzerine yazın:
 - index.html
 - app.js
 - styles.css
@@ -8,20 +8,10 @@ ZIP içeriği:
 - firebase-config.js
 
 Yapılanlar:
-1. FUTBOL ARENA kaynak projesindeki maç simülasyonu yaklaşımı Çark Futbol'a uyarlandı: takım hücum/savunma gücü, şut kalitesi, kaleci kurtarışları, xG, topa sahip olma, pas isabeti, kornerler, sarı/kırmızı kartlar ve oyuncu isimli olay akışı.
-2. Çark Futbol'da yedek oyuncu seçimi olmadığı için motor ilk 11 ile çalışacak şekilde uyarlandı; oyuncu seçimi/kadro/çark/Firebase akışı korundu.
-3. Maç raporu FUTBOL ARENA görünümünde açılır pencere olarak düzenlendi: skor, istatistik tablosu, dakika bazlı olay listesi ve kapatma düğmesi.
-4. Oynanmış maçların fikstür satırında “Maç detayları” düğmesi eklendi.
-5. players.json içindeki 300 futbolcu ve firebase-config.js ayarları değiştirilmedi.
+1. Mobil tarayıcılar için dokunma alanları, gezinme sekmeleri, oda/lig formları, fikstür düğmeleri ve maç raporu penceresi iyileştirildi.
+2. Maç raporunda topa sahip olma ve pas isabeti için güncel veri alanları okunuyor; eski kayıtların farklı alan adları da destekleniyor.
+3. Eski maç sonuçlarında bu iki değer kayıtlı değilse, takım kadro puanlarından makul bir yüzde hesaplanarak boş görünmeleri önleniyor. Bu eski sonuçlarda gerçek ölçüm değil, geriye dönük tahmindir. Yeni simüle edilen maçlarda motorun ürettiği değerler kullanılır.
+4. 300 oyunculuk players.json ve firebase-config.js korunmuştur.
 
-Kurulum:
-1. ZIP'i açın.
-2. Beş dosyayı GitHub cark-futbol deposunun ana dizinine yükleyip mevcut dosyaların üzerine yazın.
-3. Commit changes yapın ve dağıtımın bitmesini bekleyin.
-4. Siteyi sert yenileyin (Ctrl+Shift+R).
-
-Kontrol:
-- app.js JavaScript sözdizimi kontrol edildi.
-- players.json içinde 300 oyuncu doğrulandı.
-- ZIP bütünlüğü kontrol edildi.
-- Gerçek Firebase ortamında tarayıcı üzerinden uçtan uca test yapılmadı.
+Kontroller: app.js için node --check başarılı; players.json içinde 300 kayıt; ZIP bütünlüğü kontrol edildi.
+Not: Canlı Firebase ortamında uçtan uca test yapılmadı.
