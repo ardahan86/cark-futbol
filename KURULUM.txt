@@ -1,17 +1,12 @@
-ÇARK FUTBOL — MOBİL ARAYÜZ VE MAÇ İSTATİSTİĞİ DÜZELTMESİ
+ÇARK FUTBOL — MOBİL ARAYÜZ VE MAÇ İSTATİSTİKLERİ DÜZELTMESİ
 
-ZIP içindeki dosyaları GitHub deposunun ana dizinine yükleyin ve aynı isimli dosyaların üzerine yazın:
-- index.html
-- app.js
-- styles.css
-- players.json
-- firebase-config.js
+ZIP içindeki dosyaları GitHub deposunun ana dizinine çıkarın ve aynı adlı dosyaların üzerine yazın.
 
-Yapılanlar:
-1. Mobil tarayıcılar için dokunma alanları, gezinme sekmeleri, oda/lig formları, fikstür düğmeleri ve maç raporu penceresi iyileştirildi.
-2. Maç raporunda topa sahip olma ve pas isabeti için güncel veri alanları okunuyor; eski kayıtların farklı alan adları da destekleniyor.
-3. Eski maç sonuçlarında bu iki değer kayıtlı değilse, takım kadro puanlarından makul bir yüzde hesaplanarak boş görünmeleri önleniyor. Bu eski sonuçlarda gerçek ölçüm değil, geriye dönük tahmindir. Yeni simüle edilen maçlarda motorun ürettiği değerler kullanılır.
-4. 300 oyunculuk players.json ve firebase-config.js korunmuştur.
+Güncellenenler:
+- styles.css: telefonda daha büyük dokunma alanları, yatay kaydırılabilir sabit sekmeler, tek sütun düzen, daha büyük çark/aksiyon düğmeleri, mobil maç raporu tam ekran penceresi ve güvenli alan boşlukları.
+- app.js: topa sahip olma ve pas isabeti alanları için eski/yeni kayıt anahtarı uyumluluğu; maç detay düğmesi artık seçilen maçın raporunu açar.
+- index.html, players.json ve firebase-config.js aynı proje paketinden korunmuştur.
 
-Kontroller: app.js için node --check başarılı; players.json içinde 300 kayıt; ZIP bütünlüğü kontrol edildi.
-Not: Canlı Firebase ortamında uçtan uca test yapılmadı.
+Yükledikten sonra GitHub Pages güncellemesini bekleyin. Telefonda siteyi yeni sekmede açın; Chrome kullanıyorsanız siteyi yeniden yükleyin ve gerekirse önbelleği temizleyin.
+
+Not: İstatistik alanı geçmiş kayıtta yoksa topa sahip olma için 50/50, pas isabeti için %75/%75 varsayılanı gösterilir; bunlar gerçek maç verisi değil, eksik eski kayıtlar için görünürlük amaçlı yedek değerlerdir. Yeni simülasyonların ürettiği değerler önceliklidir. JavaScript sözdizimi ve JSON/ZIP bütünlüğü kontrol edilmelidir; canlı Firebase testi yapılmamıştır.

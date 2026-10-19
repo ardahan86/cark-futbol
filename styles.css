@@ -26,54 +26,93 @@ body:has(#matchReport:not(.hidden))::after{content:"";position:fixed;inset:0;bac
 .arena-event{display:grid;grid-template-columns:54px minmax(0,1fr) 95px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #2b435e;font-size:.88rem}.arena-event>b{color:#d9ff6c}.arena-event small{text-align:right;color:#b6cce4}
 @media(max-width:600px){#matchReport.match-report-modal{padding:17px;max-height:90vh}.arena-stat-row{grid-template-columns:48px 1fr 48px;padding:8px 7px;font-size:.82rem}.arena-event{grid-template-columns:42px minmax(0,1fr);gap:7px;padding:9px}.arena-event small{grid-column:2;text-align:left}.match-report-close{width:36px;height:36px}}
 
-/* Mobil tarayıcı kullanım iyileştirmeleri */
+
+/* MOBILE FIRST PASS — visible, touch-friendly layout overrides */
+:root { --mobile-gutter: 12px; }
 button, .btn, select, input { touch-action: manipulation; }
-button, .btn { min-height: 42px; }
-@media (max-width: 700px) {
+button, .btn { min-height: 44px; }
+.nav-tab { min-height: 44px; }
+@media (max-width: 760px) {
   html { -webkit-text-size-adjust: 100%; }
-  body { min-width: 320px; }
-  .topbar { height: auto; min-height: 60px; gap: 8px; padding: 10px 12px; }
-  .top-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-  .wrap { padding: 14px 10px 30px; }
-  .welcome-row, .room-title, .league-head { gap: 12px; }
-  .room-title h2 { font-size: 1.45rem; overflow-wrap: anywhere; }
-  .nav-tabs { position: sticky; top: 60px; z-index: 20; padding: 5px; margin: 0 -2px 14px; background: #0b1020f2; border: 1px solid #263650; border-radius: 13px; scrollbar-width: thin; }
-  .nav-tab { flex: 0 0 auto; min-height: 44px; padding: 11px 13px; font-size: .82rem; }
-  .panel { padding: 13px; border-radius: 14px; }
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .topbar { height: 58px; padding: 0 12px; gap: 8px; }
+  .brand { font-size: .82rem; gap: 7px; flex-shrink: 0; }
+  .logo { width: 32px; height: 32px; border-radius: 10px; font-size: 17px; }
+  .top-actions { gap: 6px; min-width: 0; }
+  #userBadge { max-width: 105px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .72rem; }
+  .top-actions .btn { min-height: 38px; padding: 7px 9px; font-size: .72rem; }
+  .wrap { width: 100%; padding: 12px 10px calc(28px + env(safe-area-inset-bottom)); }
+  .hero-grid { display: flex; flex-direction: column; gap: 12px; padding: 10px 0 18px; min-height: 0; }
+  .hero { padding: 12px 2px; }
+  .hero h1 { font-size: clamp(2rem, 9vw, 2.8rem); }
+  .hero p { font-size: .94rem; margin-bottom: 10px; }
+  .chips { margin-top: 14px; gap: 6px; }
+  .chips span { padding: 7px 9px; font-size: .72rem; }
+  .auth { width: 100%; max-width: none; justify-self: stretch; }
+  .panel { padding: 14px; border-radius: 15px; }
   .panel-head { gap: 8px; }
-  .panel-head h2, .panel-head h3 { overflow-wrap: anywhere; }
-  .room-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .room-actions .btn { width: 100%; white-space: normal; }
-  .inline-form { grid-template-columns: minmax(0,1fr); }
+  .panel-head h2 { font-size: 1.08rem; }
+  .welcome-row { margin: 8px 0 14px; gap: 10px; }
+  .welcome-row h1 { font-size: 1.45rem; overflow-wrap: anywhere; }
+  .welcome-row p { margin: 6px 0 0; font-size: .82rem; }
+  .welcome-row > button { width: 100%; }
+  .nav-tabs { position: sticky; top: 58px; z-index: 20; display: flex; gap: 7px; margin: 0 -10px 12px; padding: 8px 10px; overflow-x: auto; background: #0b1020f2; border-bottom: 1px solid #2a3955; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab { flex: 0 0 auto; padding: 10px 12px; font-size: .78rem; border-radius: 10px; }
+  .columns, .draft-grid, .league-grid, .squad-columns { grid-template-columns: minmax(0,1fr) !important; gap: 12px; }
+  .inline-form { grid-template-columns: minmax(0,1fr) !important; gap: 10px; }
   .inline-form button { grid-column: auto; width: 100%; }
-  .league-controls { display: grid; grid-template-columns: minmax(0,1fr); }
-  .league-controls label { min-width: 0; width: 100%; }
-  .league-controls .btn { width: 100%; }
-  .tactic-row { gap: 9px; }
+  .room-card { align-items: flex-start; flex-direction: column; }
+  .room-card .btn { width: 100%; }
+  .room-title, .league-head { flex-direction: column; align-items: stretch; gap: 12px; }
+  .room-title h2 { font-size: 1.45rem; }
+  .room-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; }
+  .room-actions .btn { width: 100%; white-space: normal; }
+  .wheel-panel { padding: 12px; }
+  .wheel-wrap { width: min(76vw, 330px); margin: 14px auto; }
+  .wheel-wrap canvas { width: 100%; height: auto; }
+  .wheel-center { width: 64px; height: 64px; }
+  .spin-result { font-size: .88rem; line-height: 1.4; }
+  .button-row { display: grid; grid-template-columns: minmax(0,1fr); gap: 9px; }
+  .button-row .btn, #spinBtn, #pickBtn { width: 100%; min-height: 48px; font-size: .92rem; }
+  #specialActions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  #specialActions .btn { width: 100%; white-space: normal; padding: 10px 6px; }
+  .tactic-row { grid-template-columns: minmax(0,1fr) !important; gap: 10px; }
   .tactic-row .btn { width: 100%; }
-  .fixture { padding: 10px; }
-  .fixture-main { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 5px; }
+  .squad-slot { grid-template-columns: 30px 40px minmax(0,1fr); padding: 9px 7px; gap: 7px; }
+  .slot-player { min-width: 0; overflow-wrap: anywhere; line-height: 1.35; font-size: .82rem; }
+  .slot-player small { display: block; }
+  .league-controls { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; width: 100%; }
+  .league-controls label, .league-controls .btn { min-width: 0; width: 100%; }
+  .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .stat { min-width: 0; padding: 11px; }
+  .stat small { font-size: .62rem; }
+  .stat b { font-size: 1.12rem; overflow-wrap: anywhere; }
+  .table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 460px; }
+  .fixture { padding: 11px; }
+  .fixture-main { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 5px; font-size: .78rem; }
   .fixture-main span { overflow-wrap: anywhere; }
-  .fixture-main b { font-size: .88rem; }
-  .fixture .btn { width: 100%; white-space: normal; }
-  .table-scroll { max-width: 100%; -webkit-overflow-scrolling: touch; }
-  #matchReport.match-report-modal { width: calc(100vw - 16px); max-height: calc(100dvh - 18px); padding: 13px; border-radius: 14px; overscroll-behavior: contain; }
-  #matchReport .match-report-head { display: block; padding-right: 36px; }
-  #matchReport .match-report-head h2 { font-size: 1.05rem; line-height: 1.35; overflow-wrap: anywhere; }
-  #matchReport .live-score { display: inline-flex; font-size: 1.5rem; margin-top: 5px; }
-  .arena-stat-row { grid-template-columns: minmax(43px,.7fr) minmax(0,1.7fr) minmax(43px,.7fr); gap: 4px; padding: 10px 6px; }
+  .fixture .btn { display: block; width: 100%; white-space: normal; }
+  #matchReport.match-report-modal { width: calc(100vw - 12px); max-height: calc(100dvh - 12px - env(safe-area-inset-top)); top: 6px; bottom: 6px; left: 6px; transform: none; padding: 13px; border-radius: 14px; overflow-y: auto; overscroll-behavior: contain; }
+  #matchReport .match-report-head { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding-right: 35px; }
+  #matchReport .match-report-head h2 { font-size: 1rem; line-height: 1.35; overflow-wrap: anywhere; }
+  #matchReport .live-score { align-self: flex-start; font-size: 1.55rem; padding: 8px 12px; }
+  #matchReport h3 { margin: 15px 0 8px; font-size: .95rem; }
+  .arena-stat-row { grid-template-columns: minmax(43px,.7fr) minmax(0,1.8fr) minmax(43px,.7fr); gap: 4px; padding: 10px 6px; }
   .arena-stat-row span { font-size: .76rem; line-height: 1.25; overflow-wrap: anywhere; }
   .arena-stat-row b { font-size: .82rem; }
-  .arena-event { grid-template-columns: 37px minmax(0,1fr); font-size: .8rem; }
-  .arena-event span { overflow-wrap: anywhere; line-height: 1.35; }
-  .arena-event small { grid-column: 2; }
-  .match-report-close { position: sticky; top: 0; z-index: 2; }
-  .toast { right: 10px; bottom: 10px; max-width: calc(100vw - 20px); }
+  .arena-event { grid-template-columns: 38px minmax(0,1fr); gap: 7px; padding: 10px 8px; font-size: .8rem; }
+  .arena-event span { overflow-wrap: anywhere; line-height: 1.4; }
+  .arena-event small { grid-column: 2; text-align: left; }
+  .match-report-close { position: sticky; top: 0; z-index: 3; width: 38px; height: 38px; margin: -5px -5px 3px 8px; }
+  .toast { left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); max-width: none; }
 }
 @media (max-width: 380px) {
-  .brand { gap: 6px; font-size: .78rem; }
-  .logo { width: 30px; height: 30px; }
-  .nav-tab { padding: 10px 9px; font-size: .76rem; }
-  .arena-stat-row { grid-template-columns: 38px minmax(0,1fr) 38px; }
+  .brand { font-size: .74rem; }
+  #userBadge { max-width: 75px; }
+  .top-actions .btn { padding: 6px; font-size: .66rem; }
+  .nav-tab { padding: 9px 10px; font-size: .73rem; }
+  .arena-stat-row { grid-template-columns: 37px minmax(0,1fr) 37px; }
   .arena-stat-row span { font-size: .7rem; }
 }
