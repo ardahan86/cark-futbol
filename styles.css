@@ -10,3 +10,18 @@
 
 /* Final-only match report and tactics */
 .match-report-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}.match-stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.match-stat{background:#0d1628;border:1px solid #2b3b56;border-radius:12px;padding:13px}.match-stat small{display:block;color:var(--muted);font-size:.75rem;margin-bottom:7px}.match-stat b{font-size:1rem}.match-events-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.match-events-grid section{background:#0d1628;border:1px solid #2b3b56;border-radius:12px;padding:15px}.match-events-grid h4{margin:0 0 10px}.match-events-grid ul{padding-left:18px;margin:0;display:grid;gap:8px}.match-events-grid li{line-height:1.5}.match-events-grid li small{color:var(--muted)}@media(max-width:700px){.match-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.match-events-grid{grid-template-columns:1fr}.match-report-head{align-items:flex-start;flex-direction:column}}
+
+/* FUTBOL ARENA tarzı maç raporu açılır penceresi */
+#matchReport.match-report-modal{position:fixed;z-index:10000;left:50%;top:50%;transform:translate(-50%,-50%);width:min(840px,calc(100vw - 28px));max-height:88vh;overflow:auto;margin:0;padding:24px;background:linear-gradient(145deg,#152942,#0d1a2d);border:1px solid #47709b;border-radius:18px;box-shadow:0 25px 90px #000b;color:#f4f7fb}
+body:has(#matchReport:not(.hidden))::after{content:"";position:fixed;inset:0;background:#020817b8;backdrop-filter:blur(3px);z-index:9998;pointer-events:none}
+#matchReport.match-report-modal{z-index:9999}
+.match-report-close{position:sticky;top:0;float:right;margin:-8px -8px 4px 12px;border:1px solid #476585;border-radius:9px;background:#29435f;color:#fff;font-size:27px;line-height:1;width:42px;height:42px;cursor:pointer}
+#matchReport .match-report-head{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #35516e;padding:4px 0 16px;margin-bottom:16px}
+#matchReport .match-report-head h2{font-size:clamp(1.05rem,2.5vw,1.55rem);margin:8px 0}
+#matchReport .live-score{display:flex;gap:12px;align-items:center;font-size:2rem;font-weight:900;color:#d9ff6c}
+#matchReport h3{margin:18px 0 10px;font-size:1rem}
+.arena-stat-table,.arena-event-list{border:1px solid #35516e;border-radius:10px;overflow:hidden}
+.arena-stat-row{display:grid;grid-template-columns:70px 1fr 70px;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #2b435e;text-align:center}
+.arena-stat-row:last-child,.arena-event:last-child{border-bottom:0}.arena-stat-row b:first-child{text-align:left}.arena-stat-row b:last-child{text-align:right}.arena-stat-row span{font-size:.88rem;color:#e1eaf5}
+.arena-event{display:grid;grid-template-columns:54px minmax(0,1fr) 95px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #2b435e;font-size:.88rem}.arena-event>b{color:#d9ff6c}.arena-event small{text-align:right;color:#b6cce4}
+@media(max-width:600px){#matchReport.match-report-modal{padding:17px;max-height:90vh}.arena-stat-row{grid-template-columns:48px 1fr 48px;padding:8px 7px;font-size:.82rem}.arena-event{grid-template-columns:42px minmax(0,1fr);gap:7px;padding:9px}.arena-event small{grid-column:2;text-align:left}.match-report-close{width:36px;height:36px}}

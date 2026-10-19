@@ -1,18 +1,27 @@
-ÇARK FUTBOL — TAKTİK VE MAÇ MOTORU GÜNCELLEMESİ
+ÇARK FUTBOL — FUTBOL ARENA MAÇ MOTORU ENTEGRASYONU
 
-ZIP içindeki dosyaları GitHub deposunun ana dizinine yükleyin: index.html, app.js, styles.css, players.json ve firebase-config.js.
+ZIP içeriği:
+- index.html
+- app.js
+- styles.css
+- players.json
+- firebase-config.js
 
-Bu sürümde:
-- Beş taktik maç motoruna farklı etkilerle bağlandı: Dengeli, Hücum, Savunma, Önde pres, Topa sahip olma.
-- Hücum taktiği şut ve hücum üretimini artırır ancak savunmayı zayıflatır.
-- Savunma taktiği rakibin fırsat kalitesini/isabetini düşürmeye yardımcı olur; hücum üretimi azalır.
-- Önde pres top kazanma/hücum etkisi verir, faul ve kart riskini artırır; 70. dakikadan sonra yorgunluk etkisi güçlenir.
-- Topa sahip olma taktiği topa sahip olmayı ve başarılı pas yüzdesini artırır.
-- Takım genel gücü, hücum hattı, mevkilere göre savunma ve kalecinin defansif gücü hesaplamaya katılır.
-- Maç anlatımı ve canlı istatistik akışı yoktur; maç sonunda skor ve 9 istatistik görünür. Gol ve kart olayları oyuncu adı ve dakika ile listelenir.
-- Draft başlangıç sırası her yeni draftta rastgele belirlenir ve odada ortak olarak saklanır.
-- players.json içindeki 300 futbolcu ve puanları değiştirilmemiştir. Firebase yapılandırması da aynı dosyadan korunmuştur.
+Yapılanlar:
+1. FUTBOL ARENA kaynak projesindeki maç simülasyonu yaklaşımı Çark Futbol'a uyarlandı: takım hücum/savunma gücü, şut kalitesi, kaleci kurtarışları, xG, topa sahip olma, pas isabeti, kornerler, sarı/kırmızı kartlar ve oyuncu isimli olay akışı.
+2. Çark Futbol'da yedek oyuncu seçimi olmadığı için motor ilk 11 ile çalışacak şekilde uyarlandı; oyuncu seçimi/kadro/çark/Firebase akışı korundu.
+3. Maç raporu FUTBOL ARENA görünümünde açılır pencere olarak düzenlendi: skor, istatistik tablosu, dakika bazlı olay listesi ve kapatma düğmesi.
+4. Oynanmış maçların fikstür satırında “Maç detayları” düğmesi eklendi.
+5. players.json içindeki 300 futbolcu ve firebase-config.js ayarları değiştirilmedi.
 
-Kurulum: ZIP'i çıkarın, dosyaları kök dizine yükleyip aynı isimlileri değiştirin ve Commit changes yapın. Ardından siteyi yenileyin.
+Kurulum:
+1. ZIP'i açın.
+2. Beş dosyayı GitHub cark-futbol deposunun ana dizinine yükleyip mevcut dosyaların üzerine yazın.
+3. Commit changes yapın ve dağıtımın bitmesini bekleyin.
+4. Siteyi sert yenileyin (Ctrl+Shift+R).
 
-Kontroller: 300 futbolcu JSON doğrulaması, JavaScript sözdizimi ve ZIP bütünlüğü kontrol edilir. Canlı Firebase uçtan uca testi yapılmamıştır.
+Kontrol:
+- app.js JavaScript sözdizimi kontrol edildi.
+- players.json içinde 300 oyuncu doğrulandı.
+- ZIP bütünlüğü kontrol edildi.
+- Gerçek Firebase ortamında tarayıcı üzerinden uçtan uca test yapılmadı.
