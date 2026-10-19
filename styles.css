@@ -116,11 +116,3 @@ button, .btn { min-height: 44px; }
   .arena-stat-row { grid-template-columns: 37px minmax(0,1fr) 37px; }
   .arena-stat-row span { font-size: .7rem; }
 }
-
-/* Çarkı büyütmek için draft/kadro yan paneli kaldırıldı. */
-.draft-grid{grid-template-columns:minmax(0,1fr)!important;gap:18px}
-.wheel-panel{width:100%;}
-.wheel-wrap{width:min(78vw,520px);margin:22px auto}
-.wheel-wrap canvas{max-width:none;width:100%;height:100%}
-@media(max-width:900px){.draft-grid{grid-template-columns:minmax(0,1fr)!important}.wheel-wrap{width:min(88vw,480px)}}
-@media(max-width:560px){.wheel-wrap{width:min(88vw,440px)}}
