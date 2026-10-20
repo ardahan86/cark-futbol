@@ -43,7 +43,12 @@ function teamProfile(team){
  const cbs=byPosition('Stoper'),fullbacks=[...byPosition('Sağ bek'),...byPosition('Sol bek')],cms=byPosition('Merkez orta saha'),cam=byPosition('Ofansif orta saha'),wingers=[...byPosition('Sağ kanat'),...byPosition('Sol kanat')],strikers=byPosition('Santrfor');
  const tactic=team.tactic||'balanced',attack=avg(squad,'attack'),defense=avg(squad,'defense'),overall=avg(squad,'overall'),forwardAttack=avg([...cam,...wingers,...strikers],'attack');
  const defensiveCore=avg(cbs,'defense')*.34+avg(fullbacks,'defense')*.18+avg(cms,'defense')*.18+Number(keeper?.defense||65)*.30;
- return {id:team.id,name:team.name,squad,tactic,attack,defense,overall,forwardAttack,defensiveCore,keeperDef:Number(keeper?.defense||65),passSkill:attack,power:(attack+defense+overall)/3};
+ // Topa sahip olma tüm ilk 11'in GENEL GÜÇ toplamına; pas becerisi ise
+ // merkez orta saha + ofansif orta saha + kanatların GENEL GÜÇ ortalamasına dayanır.
+ const overallPowerTotal=squad.reduce((sum,p)=>sum+Number(p.overall||0),0);
+ const passPlayers=[...cms,...cam,...wingers];
+ const passSkill=passPlayers.length?avg(passPlayers,'overall'):overall;
+ return {id:team.id,name:team.name,squad,tactic,attack,defense,overall,forwardAttack,defensiveCore,keeperDef:Number(keeper?.defense||65),passSkill,overallPowerTotal,power:overall};
 }
 function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
 function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min}
@@ -54,7 +59,9 @@ function simulateMatch(home,away){
  const h=teamProfile(home),a=teamProfile(away);
  const tactics={balanced:{att:0,def:0,poss:0,shots:0,accuracy:0,fatigue:0,fouls:0},attacking:{att:.19,def:-.12,poss:-1,shots:1.5,accuracy:-1,fatigue:.025,fouls:0},defensive:{att:-.18,def:.19,poss:-2,shots:-1.2,accuracy:1,fatigue:0,fouls:-.01},pressing:{att:.10,def:.08,poss:1,shots:.5,accuracy:-1,fatigue:.11,fouls:.12},possession:{att:.02,def:.02,poss:5,shots:.1,accuracy:2,fatigue:.01,fouls:-.02}};
  const ht=tactics[h.tactic]||tactics.balanced,at=tactics[a.tactic]||tactics.balanced,relativePower=h.power-a.power;
- const homePoss=clamp(Math.round(50+relativePower*.32+(h.passSkill-a.passSkill)*.10+(ht.pos-at.pos)+(Math.random()*14-7)),32,68),awayPoss=100-homePoss;
+ const powerSum=h.overallPowerTotal+a.overallPowerTotal;
+ // Yüzde doğrudan iki takımın ilk 11 genel güç toplamlarının oranından hesaplanır.
+ const homePoss=powerSum>0?clamp(Math.round(h.overallPowerTotal/powerSum*100),1,99):50,awayPoss=100-homePoss;
  const expectedHome=clamp(1.25+(h.forwardAttack-70)*.018-(a.defensiveCore-70)*.014+(ht.att-at.def)+relativePower*.006,.15,3.4);
  const expectedAway=clamp(1.18+(a.forwardAttack-70)*.018-(h.defensiveCore-70)*.014+(at.att-ht.def)-relativePower*.006,.15,3.4);
  function playSide(profile,opp,expected,tac,oppTac){
@@ -79,7 +86,7 @@ function simulateMatch(home,away){
   for(let i=0;i<yellowCount;i++){const p=choose(profile.squad.filter(x=>!['Kaleci','Santrfor'].includes(x.position)))||choose(profile.squad);out.push({minute:randInt(1,90),type:'yellow',team:profile.id,playerId:p?.id||null,playerName:p?.name||profile.name,text:`Sarı kart · ${p?.name||profile.name}`})}
   if(redCount){const p=choose(profile.squad.filter(x=>x.position!=='Kaleci'))||choose(profile.squad);out.push({minute:randInt(1,90),type:'red',team:profile.id,playerId:p?.id||null,playerName:p?.name||profile.name,text:`Kırmızı kart · ${p?.name||profile.name}`})}return {yellowCount,redCount,fouls,events:out};}
  const hc=cards(h,ht),ac=cards(a,at);events.push(...hc.events,...ac.events);events.sort((x,y)=>x.minute-y.minute);
- const passAccuracy=(profile,poss,tac)=>clamp(Math.round(76+(profile.passSkill-75)*.38+(poss-50)*.13+tac.accuracy+(Math.random()*10-5)),60,96);
+ const passAccuracy=(profile,poss,tac)=>clamp(Math.round(76+(profile.passSkill-75)*.48+tac.accuracy+(Math.random()*6-3)),60,96);
  return {homeGoals:hs.goals,awayGoals:as.goals,homeXg:hs.xg,awayXg:as.xg,homePossession:homePoss,awayPossession:awayPoss,homeShots:hs.shots,awayShots:as.shots,homeOnTarget:hs.onTarget,awayOnTarget:as.onTarget,homeSaves:as.saves,awaySaves:hs.saves,homeCorners:hs.corners,awayCorners:as.corners,homeFouls:hc.fouls,awayFouls:ac.fouls,homePassAccuracy:passAccuracy(h,homePoss,ht),awayPassAccuracy:passAccuracy(a,awayPoss,at),homeYellowCards:hc.yellowCount,awayYellowCards:ac.yellowCount,homeRedCards:hc.redCount,awayRedCards:ac.redCount,events};
 }
 function buildFixtures(teamIds){let a=[...teamIds];if(a.length%2)a.push(null);let n=a.length,rot=[...a],rounds=[];for(let r=0;r<n-1;r++){let m=[];for(let i=0;i<n/2;i++){let x=rot[i],y=rot[n-1-i];if(x&&y){let home=(r+i)%2===0?x:y;m.push({homeUid:home,awayUid:home===x?y:x,round:r+1,leg:1})}}rounds.push(m);rot=[rot[0],rot[n-1],...rot.slice(1,n-1)]}const first=rounds.flat();const second=rounds.map((ms,i)=>ms.map(m=>({homeUid:m.awayUid,awayUid:m.homeUid,round:rounds.length+i+1,leg:2}))).flat();return [...first,...second].map((m,i)=>({...m,id:'match-'+(i+1),played:false}))}
@@ -161,7 +168,8 @@ function possessionPair(r){
   let h=firstStat(r,['homePossession','homePossessionPct','homePossessionPercent','possessionHome','homePossessionPercentage']);
   let a=firstStat(r,['awayPossession','awayPossessionPct','awayPossessionPercent','possessionAway','awayPossessionPercentage']);
   if(h===null&&a!==null)h=100-a;if(a===null&&h!==null)a=100-h;
-  if(h===null&&a===null){h=null;a=null;}
+  if(h===null&&a===null)return ['—','—'];
+  if(h===null)h=100-a;if(a===null)a=100-h;
   h=Math.max(0,Math.min(100,h));a=Math.max(0,Math.min(100,a));
   const total=h+a;if(total>0&&Math.abs(total-100)>0.5){h=Math.round(h/total*100);a=100-h}else{h=Math.round(h);a=Math.round(a)}
   return [h,a];
