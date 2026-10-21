@@ -71,17 +71,19 @@ function simulateMatch(home,away){
  if(h.overallTotal>a.overallTotal)addGoal(home,h,'Toplam overall üstünlüğü');
  else if(a.overallTotal>h.overallTotal)addGoal(away,a,'Toplam overall üstünlüğü');
  // Savunma: kaleci + 2 stoper + sağ bek + sol bek; defense toplamı.
- awardByDifference(home,h,away,a,'defenseTotal',6,'Savunma üstünlüğü',addGoal);
+ awardByDifference(home,h,away,a,'defenseTotal',8,'Savunma üstünlüğü',addGoal);
  // Orta saha: 2 merkez orta saha + ofansif orta saha; overall toplamı.
- awardByDifference(home,h,away,a,'midfieldTotal',4,'Orta saha üstünlüğü',addGoal);
- // Hücum: sağ kanat + sol kanat + santrfor; attack toplamı.
- awardByDifference(home,h,away,a,'attackTotal',4,'Hücum üstünlüğü',addGoal);
+ awardByDifference(home,h,away,a,'midfieldTotal',6,'Orta saha üstünlüğü',addGoal);
+ // Hücum: sağ kanat + sol kanat + santrfor + ofansif orta saha; attack toplamı.
+ awardByDifference(home,h,away,a,'attackTotal',6,'Hücum üstünlüğü',addGoal);
+ // Kanat Bindirmeleri: sağ bek + sol bek + sağ kanat + sol kanat; attack toplamı.
+ awardByDifference(home,h,away,a,'wingOverlapTotal',7,'Kanat Bindirmeleri',addGoal);
  // Zayıf toplam kadrolu ev sahibine yalnızca omurga hesabında +6 puan.
  const hSpine=h.spineTotal+(h.overallTotal<a.overallTotal?6:0);
  const aSpine=a.spineTotal;
  const spineDiff=hSpine-aSpine;
- if(spineDiff>=5)addGoal(home,h,'Omurga üstünlüğü');
- else if(spineDiff<=-5)addGoal(away,a,'Omurga üstünlüğü');
+ if(spineDiff>=7)addGoal(home,h,'Omurga üstünlüğü');
+ else if(spineDiff<=-7)addGoal(away,a,'Omurga üstünlüğü');
  events.sort((x,y)=>x.minute-y.minute);
  return {homeGoals,awayGoals,events};
 }
@@ -94,11 +96,12 @@ function scoreTeam(team){
  const overallTotal=sum(squad,'overall');
  const defenseTotal=sum([keeper,...cbs.slice(0,2),by('Sağ bek')[0],by('Sol bek')[0]].filter(Boolean),'defense');
  const midfieldTotal=sum([...cms.slice(0,2),by('Ofansif orta saha')[0]].filter(Boolean),'overall');
- const attackTotal=sum([by('Sağ kanat')[0],by('Sol kanat')[0],by('Santrfor')[0]].filter(Boolean),'attack');
+ const attackTotal=sum([by('Sağ kanat')[0],by('Sol kanat')[0],by('Santrfor')[0],by('Ofansif orta saha')[0]].filter(Boolean),'attack');
+ const wingOverlapTotal=sum([by('Sağ bek')[0],by('Sol bek')[0],by('Sağ kanat')[0],by('Sol kanat')[0]].filter(Boolean),'attack');
  const bestCb=cbs.slice().sort((x,y)=>Number(y.overall||0)-Number(x.overall||0))[0];
  const bestCm=cms.slice().sort((x,y)=>Number(y.overall||0)-Number(x.overall||0))[0];
  const spineTotal=sum([keeper,bestCb,bestCm,by('Ofansif orta saha')[0],by('Santrfor')[0]].filter(Boolean),'overall');
- return {id:team.id,name:team.name,squad,overallTotal,defenseTotal,midfieldTotal,attackTotal,spineTotal};
+ return {id:team.id,name:team.name,squad,overallTotal,defenseTotal,midfieldTotal,attackTotal,wingOverlapTotal,spineTotal};
 }
 function awardByDifference(home,homeScore,away,awayScore,key,threshold,reason,addGoal){
  const difference=homeScore[key]-awayScore[key];
