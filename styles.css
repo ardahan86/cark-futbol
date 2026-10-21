@@ -124,3 +124,21 @@ button, .btn { min-height: 44px; }
 .wheel-wrap canvas{max-width:none;width:100%;height:100%}
 @media(max-width:900px){.draft-grid{grid-template-columns:minmax(0,1fr)!important}.wheel-wrap{width:min(88vw,480px)}}
 @media(max-width:560px){.wheel-wrap{width:min(88vw,440px)}}
+
+/* Kadro yönetimi: yalnızca diziliş ve rakip kadroları */
+.formation-only{grid-template-columns:minmax(0,260px);margin:14px 0 18px}
+.opponent-squads-section{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.opponent-squads{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px;margin-top:12px}
+.opponent-team-card{background:#0c1526;border:1px solid #30415f;border-radius:14px;padding:14px;min-width:0}
+.opponent-team-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.opponent-team-head b{display:block;font-size:1rem;color:var(--text)}
+.opponent-team-head small{display:block;color:var(--muted);font-size:.78rem;margin-top:4px}
+.opponent-team-head strong{color:var(--lime);font-size:1rem;white-space:nowrap}
+.opponent-progress{height:8px;margin:12px 0 14px}
+.opponent-roster{display:grid;gap:6px}
+.opponent-player{display:grid;grid-template-columns:82px minmax(0,1fr);gap:4px 8px;align-items:center;padding:8px 9px;border-radius:8px;background:#111d31;border:1px solid #253651;font-size:.8rem}
+.opponent-player.filled{border-color:#354b69}
+.opponent-pos{font-weight:800;color:var(--lime);font-size:.72rem}
+.opponent-name{overflow-wrap:anywhere;color:#e5edf9}
+.opponent-player small{grid-column:2;color:var(--muted);font-size:.7rem}
+@media(max-width:560px){.formation-only{grid-template-columns:1fr}.opponent-squads{grid-template-columns:1fr}.opponent-player{grid-template-columns:76px minmax(0,1fr)}}
