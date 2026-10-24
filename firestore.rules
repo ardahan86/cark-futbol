@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function isAdmin() { return signedIn() && request.auth.uid == "niWBY7pf8FbJG76yqsv219dMEdR2"; }
+    function isAdmin() { return signedIn() && request.auth.uid == "BahpBQ1anNRV0TPwv3Z5lHPycGm2"; }
     function isRoomMember(roomData) { return signedIn() && request.auth.uid in roomData.memberOrder; }
     function roomExists(roomId) { return exists(/databases/$(database)/documents/rooms/$(roomId)); }
     function roomFinished(roomId) { return roomExists(roomId) && get(/databases/$(database)/documents/rooms/$(roomId)).data.status == 'finished'; }
