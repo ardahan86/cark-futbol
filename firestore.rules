@@ -44,7 +44,9 @@ service cloud.firestore {
         && request.resource.data.ownerUid == resource.data.ownerUid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'picks','pendingPick','turnIndex','status','draftStage','lastSpin','lastSpinAnnouncement','protectionRights','swapRights',
-          'protectionRightsEarned','swapRightsEarned','lastPickAnnouncement','tactics','league','updatedAt'
+          'protectionRightsEarned','swapRightsEarned','lastPickAnnouncement','tactics','league','updatedAt',
+          // Post-draft protection and swap workflow fields used by the app.
+          'protectionDone','postDraftPhase','swapConfirmed','swapRequests','swapResolved','swapResults'
         ])
       );
       allow delete: if isAdmin();
