@@ -157,3 +157,10 @@ button, .btn { min-height: 44px; }
 @keyframes pickAnnouncementInOut{0%{opacity:0;transform:translate(-50%,-46%) scale(.94)}8%,88%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-54%) scale(.98)}}
 @media(max-width:560px){.pick-announcement{padding:21px 16px;border-radius:16px}.pick-announcement-user{font-size:1rem}.pick-announcement-result{font-size:2rem}.pick-announcement-crest{width:110px;height:110px}}
 /* Keep routine spin feedback out of the bottom-right toast; results use the centered overlay. */
+
+/* Hide the persistent wheel helper panel; status is communicated by the shared modal. */
+#spinResult{display:none!important}
+/* Player selection announcement: three rows, 5 seconds. */
+.pick-player-announcement{gap:10px}
+.pick-announcement-club{font-size:1.2rem;font-weight:900;color:#ffd84d;line-height:1.2;overflow-wrap:anywhere}
+.pick-announcement-player{font-size:clamp(2.24rem,8vw,3rem);font-weight:1000;color:#ff4141;line-height:1.1;overflow-wrap:anywhere;text-shadow:0 0 18px #ff414155}
