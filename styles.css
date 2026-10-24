@@ -143,12 +143,17 @@ button, .btn { min-height: 44px; }
 .opponent-player small{grid-column:2;color:var(--muted);font-size:.7rem}
 @media(max-width:560px){.formation-only{grid-template-columns:1fr}.opponent-squads{grid-template-columns:1fr}.opponent-player{grid-template-columns:76px minmax(0,1fr)}}
 
-/* Global five-second draft pick announcement, synchronized through Firestore. */
+/* Synchronized 3-second wheel-result announcement. */
 .pick-announcement{position:fixed;z-index:10001;left:50%;top:50%;width:min(560px,calc(100vw - 32px));padding:25px 28px;transform:translate(-50%,-50%) scale(.96);border:2px solid var(--lime,#c8f169);border-radius:20px;background:linear-gradient(145deg,#152942f5,#081222f7);box-shadow:0 0 0 9999px #02071375,0 0 35px #c8f16955;color:#f4f7fb;text-align:center;opacity:0;pointer-events:none}
 .pick-announcement.hidden{display:none}
 .pick-announcement-show{animation:pickAnnouncementInOut 3s ease both}
-.pick-announcement-main{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.pick-announcement-main{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .pick-announcement-user{font-size:1.12rem;font-weight:800;color:#fff;line-height:1.25;overflow-wrap:anywhere}
+.pick-announcement-crest{width:clamp(100px,20vw,150px);height:clamp(100px,20vw,150px);display:grid;place-items:center}
+.spin-club-crest{display:block;max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 14px #0008)}
+.spin-special-icon{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(4.5rem,12vw,6rem);filter:drop-shadow(0 8px 14px #0008)}
+.spin-crest-fallback{display:grid;place-items:center;width:100%;height:100%;clip-path:polygon(50% 0,92% 14%,88% 67%,50% 100%,12% 67%,8% 14%);background:linear-gradient(145deg,#e4c76a,#243d69);color:#101827;font-size:1.7rem;font-weight:1000;border:0;box-shadow:0 8px 18px #0008}
 .pick-announcement-result{font-size:clamp(2.24rem,8vw,3rem);font-weight:1000;color:#ff4141;line-height:1.1;overflow-wrap:anywhere;text-shadow:0 0 18px #ff414155}
 @keyframes pickAnnouncementInOut{0%{opacity:0;transform:translate(-50%,-46%) scale(.94)}8%,88%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-54%) scale(.98)}}
-@media(max-width:560px){.pick-announcement{padding:21px 16px;border-radius:16px}.pick-announcement-user{font-size:1rem}.pick-announcement-result{font-size:2rem}}
+@media(max-width:560px){.pick-announcement{padding:21px 16px;border-radius:16px}.pick-announcement-user{font-size:1rem}.pick-announcement-result{font-size:2rem}.pick-announcement-crest{width:110px;height:110px}}
+/* Keep routine spin feedback out of the bottom-right toast; results use the centered overlay. */
