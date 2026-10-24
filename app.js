@@ -14,23 +14,23 @@ const isAdmin=()=>!!user&&user.uid===ADMIN_UID;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function msg(text,error=false){const t=$('toast');if(!t)return;clearTimeout(toastTimer);if(!error){t.className='toast';return}t.textContent=text;t.className='toast show error';toastTimer=setTimeout(()=>t.className='toast',4500)}
 const CLUB_CRESTS={
- 'Galatasaray':'./assets/crests/galatasaray.png',
- 'Fenerbahçe':'./assets/crests/fenerbahce.png',
- 'Beşiktaş':'./assets/crests/besiktas.png',
- 'Trabzonspor':'./assets/crests/trabzonspor.png',
- 'Barcelona':'./assets/crests/barcelona.png',
- 'Real Madrid':'./assets/crests/real-madrid.png',
- 'Inter':'./assets/crests/inter.png',
- 'PSG':'./assets/crests/psg.png',
- 'Bayern Münih':'./assets/crests/bayern-munih.png',
- 'Manchester City':'./assets/crests/manchester-city.png',
- 'Arsenal':'./assets/crests/arsenal.png',
- 'Liverpool':'./assets/crests/liverpool.png',
- 'Atlético Madrid':'./assets/crests/atletico-madrid.png',
- 'Juventus':'./assets/crests/juventus.png',
- 'Manchester United':'./assets/crests/manchester-united.png'
+ 'Galatasaray':'./assets/crests/Galatasaray.png',
+ 'Fenerbahçe':'./assets/crests/Fenerbahçe.png',
+ 'Beşiktaş':'./assets/crests/Beşiktaş.png',
+ 'Trabzonspor':'./assets/crests/Trabzonspor.png',
+ 'Barcelona':'./assets/crests/Barcelona.png',
+ 'Real Madrid':'./assets/crests/Real Madrid.png',
+ 'Inter':'./assets/crests/İnter.png',
+ 'PSG':'./assets/crests/PSG.png',
+ 'Bayern Münih':'./assets/crests/Bayern Münih.png',
+ 'Manchester City':'./assets/crests/Manchester City.png',
+ 'Arsenal':'./assets/crests/Arsenal.png',
+ 'Liverpool':'./assets/crests/Liverpool.png',
+ 'Atlético Madrid':'./assets/crests/Atletico Madrid.png',
+ 'Juventus':'./assets/crests/Juventus.png',
+ 'Manchester United':'./assets/crests/Manchester United.png'
 };
-const SPECIAL_SPIN_RESULTS={PAS:{label:'PAS',src:'./assets/crests/pas.png'},KORUMA:{label:'KORUMA',src:'./assets/crests/koruma.png'},TAKAS:{label:'TAKAS',src:'./assets/crests/takas.png'}};
+const SPECIAL_SPIN_RESULTS={PAS:{label:'PAS',src:'./assets/crests/PAS.png'},KORUMA:{label:'KORUMA',src:'./assets/crests/KORUMA.png'},TAKAS:{label:'TAKAS',src:'./assets/crests/TAKAS.png'}};
 function crestFallback(result){const initials=({'Galatasaray':'GS','Arsenal':'ARS','Beşiktaş':'BJK','Atlético Madrid':'ATM','Real Madrid':'RMA','Juventus':'JUV','PSG':'PSG','Fenerbahçe':'FB','Manchester City':'MCI','Bayern Münih':'FCB','Inter':'INT','Trabzonspor':'TS','Liverpool':'LIV','Barcelona':'BAR','Manchester United':'MUN'})[result]||'FC';return `<div class="spin-crest-fallback" aria-label="${esc(result)} arması"><span>${esc(initials)}</span></div>`}
 function presentAnnouncement(html,duration){const box=$('pickAnnouncement');if(!box)return;box.innerHTML=html;box.style.animationDuration=`${duration/1000}s`;box.classList.remove('hidden','pick-announcement-show');void box.offsetWidth;box.classList.add('pick-announcement-show');clearTimeout(pickAnnouncementTimer);pickAnnouncementTimer=setTimeout(()=>{box.classList.remove('pick-announcement-show');box.classList.add('hidden')},duration)}
 function showSpinAnnouncement(announcement){if(!announcement?.id||announcement.id===lastSpinAnnouncementId)return;lastSpinAnnouncementId=announcement.id;const result=String(announcement.result||'');const special=SPECIAL_SPIN_RESULTS[result];const crestSrc=special?.src||CLUB_CRESTS[result];let middle='';if(crestSrc){middle=`<img class="${special?'spin-special-crest':'spin-club-crest'}" src="${crestSrc}" alt="${esc(special?.label||result)} logosu" onerror="this.outerHTML=window.__spinCrestFallback('${result.replace(/'/g, '&#39;')}')">`}else{middle=`<div class="spin-special-icon">🎡</div>`}presentAnnouncement(`<div class="pick-announcement-main"><div class="pick-announcement-user">${esc(announcement.managerName||'Menajer')}</div><div class="pick-announcement-crest">${middle}</div><div class="pick-announcement-result">${esc(special?.label||result)}</div></div>`,3000)}
