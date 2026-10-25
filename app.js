@@ -146,8 +146,8 @@ function simulateMatch(home,away){
   events.push(event);
   if(team.id===h.id)homeGoals++;else awayGoals++;
  };
- // Ev sahibi avantajı: +1 gol; golcü kaleci hariç rastgele seçilir.
- addGoal(home,h,'Ev sahibi avantajı');
+ // Ev sahibi avantajı: ev sahibinin ilk 11 toplam overall puanı düşükse +1 gol.
+ if(h.overallTotal<a.overallTotal)addGoal(home,h,'Ev sahibi avantajı');
  // Toplam ilk 11 overall üstünlüğü: +1 gol. Eşitlikte bonus yok.
  if(h.overallTotal>a.overallTotal)addGoal(home,h,'Toplam overall üstünlüğü');
  else if(a.overallTotal>h.overallTotal)addGoal(away,a,'Toplam overall üstünlüğü');
@@ -159,8 +159,8 @@ function simulateMatch(home,away){
  awardByDifference(home,h,away,a,'attackTotal',6,'Hücum üstünlüğü',addGoal);
  // Kanat Bindirmeleri: sağ bek + sol bek + sağ kanat + sol kanat; attack toplamı.
  awardByDifference(home,h,away,a,'wingOverlapTotal',7,'Kanat Bindirmeleri',addGoal);
- // Zayıf toplam kadrolu ev sahibine yalnızca omurga hesabında +6 puan.
- const hSpine=h.spineTotal+(h.overallTotal<a.overallTotal?6:0);
+ // Toplam ilk 11 overall puanı düşük olan ev sahibine yalnızca omurga hesabında +10 puan.
+ const hSpine=h.spineTotal+(h.overallTotal<a.overallTotal?10:0);
  const aSpine=a.spineTotal;
  const spineDiff=hSpine-aSpine;
  if(spineDiff>=7)addGoal(home,h,'Omurga üstünlüğü');
