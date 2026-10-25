@@ -148,7 +148,7 @@
       "club": "Galatasaray",
       "shirtNumber": 16,
       "name": "Aleksey Batrakov",
-      "position": "Merkez orta saha",
+      "position": "Ofansif orta saha",
       "attack": 84,
       "defense": 76,
       "overall": 80
@@ -268,7 +268,7 @@
       "club": "Fenerbahçe",
       "shirtNumber": 8,
       "name": "Vedat Muriqi",
-      "position": "Stoper",
+      "position": "Santrfor",
       "attack": 79,
       "defense": 1,
       "overall": 79
@@ -2018,7 +2018,7 @@
       "club": "Arsenal",
       "shirtNumber": 3,
       "name": "Kai Havertz",
-      "position": "Kaleci",
+      "position": "Santrfor",
       "attack": 82,
       "defense": 1,
       "overall": 82
@@ -2268,7 +2268,7 @@
       "club": "Liverpool",
       "shirtNumber": 8,
       "name": "Bradley Barcola",
-      "position": "Stoper",
+      "position": "Sol kanat",
       "attack": 87,
       "defense": 77,
       "overall": 82
