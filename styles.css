@@ -165,3 +165,9 @@ button, .btn { min-height: 44px; }
 .pick-player-announcement{gap:10px}
 .pick-announcement-club{font-size:1.2rem;font-weight:900;color:#ffd84d;line-height:1.2;overflow-wrap:anywhere}
 .pick-announcement-player{font-size:clamp(2.24rem,8vw,3rem);font-weight:1000;color:#ff4141;line-height:1.1;overflow-wrap:anywhere;text-shadow:0 0 18px #ff414155}
+
+/* Kurallar bölümündeki maç puanlama tablosu */
+.rules-table{width:100%;border-collapse:collapse;margin:12px 0 16px;font-size:14px}
+.rules-table th,.rules-table td{border:1px solid var(--border,#334155);padding:10px;text-align:left;vertical-align:top}
+.rules-table th{font-weight:700;background:rgba(100,116,139,.16)}
+@media(max-width:700px){.rules-table{font-size:12px}.rules-table th,.rules-table td{padding:7px}}
