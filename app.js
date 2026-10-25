@@ -35,27 +35,32 @@ let user=null,profile=null,players=[],rooms=[],roomsUnsub=null,roomUnsub=null,ro
 const isAdmin=()=>!!user&&user.uid===ADMIN_UID;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function msg(text,error=false){const t=$('toast');if(!t)return;clearTimeout(toastTimer);if(!error){t.className='toast';return}t.textContent=text;t.className='toast show error';toastTimer=setTimeout(()=>t.className='toast',4500)}
+const crestPath = filename => './assets/crests/' + encodeURIComponent(filename);
 const CLUB_CRESTS={
- 'Galatasaray':'./assets/crests/Galatasaray.png',
- 'Arsenal':'./assets/crests/Arsenal.png',
- 'Beşiktaş':'./assets/crests/Beşiktaş.png',
- 'Atlético Madrid':'./assets/crests/Atletico Madrid.png',
- 'Real Madrid':'./assets/crests/Real Madrid.png',
- 'Juventus':'./assets/crests/Juventus.png',
- 'PSG':'./assets/crests/PSG.png',
- 'Fenerbahçe':'./assets/crests/Fenerbahçe.png',
- 'Manchester City':'./assets/crests/Manchester City.png',
- 'Bayern Münih':'./assets/crests/Bayern Münih.png',
- 'Inter':'./assets/crests/Inter.png',
- 'Trabzonspor':'./assets/crests/Trabzonspor.png',
- 'Liverpool':'./assets/crests/Liverpool.png',
- 'Barcelona':'./assets/crests/Barcelona.png',
- 'Manchester United':'./assets/crests/Manchester United.png'
+ 'Galatasaray':crestPath('Galatasaray.png'),
+ 'Arsenal':crestPath('Arsenal.png'),
+ 'Beşiktaş':crestPath('Beşiktaş.png'),
+ 'Atlético Madrid':crestPath('Atletico Madrid.png'),
+ 'Real Madrid':crestPath('Real Madrid.png'),
+ 'Juventus':crestPath('Juventus.png'),
+ 'PSG':crestPath('PSG.png'),
+ 'Fenerbahçe':crestPath('Fenerbahçe.png'),
+ 'Manchester City':crestPath('Manchester City.png'),
+ 'Bayern Münih':crestPath('Bayern Münih.png'),
+ 'Inter':crestPath('Inter.png'),
+ 'Trabzonspor':crestPath('Trabzonspor.png'),
+ 'Liverpool':crestPath('Liverpool.png'),
+ 'Barcelona':crestPath('Barcelona.png'),
+ 'Manchester United':crestPath('Manchester United.png')
 };
-const SPECIAL_SPIN_RESULTS={PAS:{icon:'⏭️',label:'PAS'},KORUMA:{icon:'🛡️',label:'KORUMA'},TAKAS:{icon:'🔄',label:'TAKAS'}};
+const SPECIAL_SPIN_RESULTS={
+  PAS:{image:crestPath('PAS.png'),label:'PAS'},
+  KORUMA:{image:crestPath('KORUMA.png'),label:'KORUMA'},
+  TAKAS:{image:crestPath('TAKAS.png'),label:'TAKAS'}
+};
 function crestFallback(result){const initials=({'Galatasaray':'GS','Arsenal':'ARS','Beşiktaş':'BJK','Atlético Madrid':'ATM','Real Madrid':'RMA','Juventus':'JUV','PSG':'PSG','Fenerbahçe':'FB','Manchester City':'MCI','Bayern Münih':'FCB','Inter':'INT','Trabzonspor':'TS','Liverpool':'LIV','Barcelona':'BAR','Manchester United':'MUN'})[result]||'FC';return `<div class="spin-crest-fallback" aria-label="${esc(result)} arması"><span>${esc(initials)}</span></div>`}
 function presentAnnouncement(html,duration){const box=$('pickAnnouncement');if(!box)return;box.innerHTML=html;box.style.animationDuration=`${duration/1000}s`;box.classList.remove('hidden','pick-announcement-show');void box.offsetWidth;box.classList.add('pick-announcement-show');clearTimeout(pickAnnouncementTimer);pickAnnouncementTimer=setTimeout(()=>{box.classList.remove('pick-announcement-show');box.classList.add('hidden')},duration)}
-function showSpinAnnouncement(announcement){if(!announcement?.id||announcement.id===lastSpinAnnouncementId)return;lastSpinAnnouncementId=announcement.id;const result=String(announcement.result||'');const special=SPECIAL_SPIN_RESULTS[result];let middle='';if(special){middle=`<div class="spin-special-icon" aria-label="${special.label}">${special.icon}</div>`}else if(CLUB_CRESTS[result]){middle=`<img class="spin-club-crest" src="${CLUB_CRESTS[result]}" alt="${esc(result)} arması" onerror="this.outerHTML=window.__spinCrestFallback('${result.replace(/'/g, '&#39;')}')">`}else{middle=`<div class="spin-special-icon">🎡</div>`}presentAnnouncement(`<div class="pick-announcement-main"><div class="pick-announcement-user">${esc(announcement.managerName||'Menajer')}</div><div class="pick-announcement-crest">${middle}</div><div class="pick-announcement-result">${esc(special?.label||result)}</div></div>`,3000)}
+function showSpinAnnouncement(announcement){if(!announcement?.id||announcement.id===lastSpinAnnouncementId)return;lastSpinAnnouncementId=announcement.id;const result=String(announcement.result||'');const special=SPECIAL_SPIN_RESULTS[result];let middle='';if(special){middle=`<img class="spin-club-crest spin-special-crest" src="${special.image}" alt="${special.label}" onerror="this.outerHTML='<div class=&quot;spin-special-icon&quot;>${special.label}</div>'">`}else if(CLUB_CRESTS[result]){middle=`<img class="spin-club-crest" src="${CLUB_CRESTS[result]}" alt="${esc(result)} arması" onerror="this.outerHTML=window.__spinCrestFallback('${result.replace(/'/g, '&#39;')}')">`}else{middle=`<div class="spin-special-icon">🎡</div>`}presentAnnouncement(`<div class="pick-announcement-main"><div class="pick-announcement-user">${esc(announcement.managerName||'Menajer')}</div><div class="pick-announcement-crest">${middle}</div><div class="pick-announcement-result">${esc(special?.label||result)}</div></div>`,3000)}
 function queueSpinAnnouncement(announcement){if(!announcement?.id||announcement.id===lastSpinAnnouncementId||announcement.id===pendingSpinAnnouncementId)return;pendingSpinAnnouncementId=announcement.id;const elapsed=Math.max(0,Date.now()-Number(announcement.at||Date.now()));const delay=Math.max(0,3300-elapsed);setTimeout(()=>{if(pendingSpinAnnouncementId!==announcement.id)return;pendingSpinAnnouncementId=null;if(room?.lastSpinAnnouncement?.id===announcement.id)showSpinAnnouncement(announcement)},delay)}
 function showPickAnnouncement(announcement){if(!announcement?.id||announcement.id===lastPickAnnouncementId)return;lastPickAnnouncementId=announcement.id;presentAnnouncement(`<div class="pick-announcement-main pick-player-announcement"><div class="pick-announcement-user">${esc(announcement.managerName||'Menajer')}</div><div class="pick-announcement-club">${esc(announcement.club||'Kulüp')}</div><div class="pick-announcement-player">${esc(announcement.playerName||'Futbolcu')}</div></div>`,5000)}
 window.__spinCrestFallback=(result)=>crestFallback(result);
