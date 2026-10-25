@@ -13,9 +13,34 @@
 <div id="leaguePane" class="pane hidden"><div class="league-head"><div><div class="eyebrow">LİG YÖNETİMİ</div><h2>Fikstür, maçlar ve puan tablosu</h2><p class="muted">Admin fikstürü oluşturur ve maçları maç maç simüle eder.</p></div><div class="league-controls"><label>Lig adı<input id="leagueName" value="Çark Futbol Ligi" maxlength="40"></label><button id="saveLeagueNameBtn" class="btn ghost">Adı kaydet</button><button id="createFixturesBtn" class="btn primary">Fikstür oluştur</button></div></div><div id="leagueStats" class="stats-grid"></div><div class="league-grid"><div class="panel"><div class="panel-head"><h3>Puan tablosu</h3><span class="pill">Canlı</span></div><div id="standings" class="table-scroll"></div></div><div class="panel"><div class="panel-head"><h3>Fikstür ve simülasyon</h3><span id="fixtureProgress" class="muted"></span></div><div id="fixtures" class="fixtures"></div></div></div><div id="matchReport" class="panel hidden"></div></div>
 <div id="rulesPane" class="pane hidden"><div class="panel"><h2>Çark Futbol kuralları</h2><div class="rules"><p><b>Çark:</b> 15 kulüp, 2 PAS, 2 KORUMA ve 1 TAKAS diliminden oluşur. Bir kulüp havuzunda futbolcu kalmadıysa sıra geçer.</p><p><b>PAS:</b> Oyuncu seçilmez ve sıra sonraki oyuncuya geçer. KORUMA ve TAKAS hakları kişi başına en fazla 2 kez kazanılabilir; hak sınırı dolduktan sonraki aynı sonuç PAS sayılır.</p><p><b>KORUMA:</b> Hakkını kullanarak kendi kadronuzdan bir oyuncuyu gizlice koruyun. Korunan oyuncular tüm kadrolar tamamlanana kadar diğer oyunculara gösterilmez.</p><p><b>TAKAS:</b> Draft tamamlandıktan sonra aynı mevkideki oyuncular arasında yapılır. Korunan oyuncu hedeflenirse takas hakkı harcanır ama takas olmaz.</p><p><b>Oyuncu seçimi:</b> Çarkta gelen kulüpten yalnızca kadroda henüz dolmamış doğal mevkiye uygun futbolcu seçilebilir. Uygun futbolcu yoksa o el PAS sayılır. Seçim için 30 saniye vardır; süre dolarsa PAS sayılır ve sıra sonraki uygun oyuncuya geçer.</p><p><b>İlk 11:</b> Kaleci, sağ bek, iki stoper, sol bek, iki merkez orta saha, ofansif orta saha, sağ kanat, sol kanat ve santrfor olmak üzere 11 mevki doldurulur. Kaleciden başlama zorunluluğu yoktur; her seçim doğal mevkiine otomatik yerleşir. İlk 11’ini tamamlayan oyuncu, diğer oyuncular tamamlayana kadar bekler. Yedek seçimi bulunmaz.</p><p><b>Güçler:</b> Futbolcu puanları seçim ekranında gösterilmez; maç motorunda kullanılır.</p><p><b>Lig:</b> Çift devreli fikstür hazırlanır. Maçları yalnızca admin başlatabilir. Her sonuç puan tablosuna işlenir.</p></div></div></div>
 </div></section></main><div id="toast" class="toast" role="status"></div><footer>ÇARK FUTBOL <span>·</span> 300 futbolcu · 15 kulüp · 11 kişilik ilk 11 · Lig simülasyonu</footer><script>
+ // Admin panelini her durumda aç/kapat; modül yüklenmese bile bu düğme çalışır.
+ const authMessage = document.getElementById('authMsg');
+ const adminToggle = document.getElementById('adminLoginToggle');
+ const adminForm = document.getElementById('adminLoginForm');
+ const guestForm = document.getElementById('guestJoinForm');
+ if (adminToggle && adminForm) {
+   adminToggle.addEventListener('click', () => {
+     const opening = adminForm.classList.contains('hidden');
+     adminForm.classList.toggle('hidden', !opening);
+     if (guestForm) guestForm.classList.toggle('hidden', opening);
+     if (authMessage) authMessage.textContent = '';
+     if (opening) document.getElementById('loginEmail')?.focus();
+   });
+ }
+ // If app.js did not bind the submit handler, show a useful diagnostic instead of doing nothing.
+ if (adminForm) {
+   adminForm.addEventListener('submit', (event) => {
+     if (adminForm.dataset.adminHandlerBound !== '1') {
+       event.preventDefault();
+       if (authMessage) {
+         authMessage.textContent = 'Giriş işlemi başlatılamadı: app.js formu başlatmadı. Sayfayı Ctrl+F5 ile yenileyin; sorun sürerse tarayıcı Console hatasını paylaşın.';
+         authMessage.style.color = '#ffaaa3';
+       }
+     }
+   });
+ }
  // Load the app module explicitly so GitHub Pages/module import failures are visible.
  // Firebase credentials and admin authorization remain handled by app.js.
- const authMessage = document.getElementById('authMsg');
  import('./app.js').catch((error) => {
    console.error('Çark Futbol app.js yüklenemedi:', error);
    if (authMessage) {
