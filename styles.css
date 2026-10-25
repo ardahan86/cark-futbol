@@ -146,8 +146,6 @@ button, .btn { min-height: 44px; }
 /* Synchronized 3-second wheel-result announcement. */
 .pick-announcement{position:fixed;z-index:10001;left:50%;top:50%;width:min(560px,calc(100vw - 32px));padding:25px 28px;transform:translate(-50%,-50%) scale(.96);border:2px solid var(--lime,#c8f169);border-radius:20px;background:linear-gradient(145deg,#152942f5,#081222f7);box-shadow:0 0 0 9999px #02071375,0 0 35px #c8f16955;color:#f4f7fb;text-align:center;opacity:0;pointer-events:none}
 .pick-announcement.hidden{display:none}
-/* Popup görünürlüğü JavaScript tarafından da garanti edilir. */
-#pickAnnouncement.pick-announcement-show{display:block!important;visibility:visible;pointer-events:none;}
 .pick-announcement-show{animation:pickAnnouncementInOut 3s ease both}
 .pick-announcement-main{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .pick-announcement-user{font-size:1.12rem;font-weight:800;color:#fff;line-height:1.25;overflow-wrap:anywhere}
