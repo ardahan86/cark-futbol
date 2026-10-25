@@ -7,7 +7,26 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const CLUBS=["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor","Barcelona","Real Madrid","Inter","PSG","Bayern Münih","Manchester City","Arsenal","Liverpool","Atlético Madrid","Juventus","Manchester United"];
 const WHEEL_SLICES=["Galatasaray","PAS","Arsenal","Atlético Madrid","KORUMA","Beşiktaş","Real Madrid","PAS","Juventus","PSG","Fenerbahçe","Manchester City","Bayern Münih","Inter","TAKAS","Trabzonspor","Liverpool","Barcelona","Manchester United","KORUMA"];
-const COLORS=['#ed6a5a','#f4a261','#e9c46a','#8ab17d','#2a9d8f','#4d96ff','#6c63ff','#c77dff','#e76f51','#457b9d','#f28482','#90be6d','#e0a458','#6c9bd2','#d17b88','#5865a8','#2a9d8f','#2a9d8f','#a66dd4','#a66dd4'];
+const COLORS = [
+  '#A90432', // Galatasaray - bordo
+  '#FFED00', // Fenerbahçe - sarı
+  '#222222', // Beşiktaş - siyah
+  '#6B1839', // Trabzonspor - bordo
+  '#004D98', // Barcelona - mavi
+  '#E8D9A9', // Real Madrid - açık altın
+  '#00529F', // Inter - mavi
+  '#004170', // PSG - lacivert
+  '#DC052D', // Bayern Münih - kırmızı
+  '#6CABDD', // Manchester City - açık mavi
+  '#EF0107', // Arsenal - kırmızı
+  '#C8102E', // Liverpool - kırmızı
+  '#CB3524', // Atlético Madrid - kırmızı
+  '#252525', // Juventus - siyah
+  '#DA291C', // Manchester United - kırmızı
+  '#6B7280', // PAS - gri
+  '#7C3AED', // KORUMA - mor
+  '#F59E0B'  // TAKAS - turuncu
+];
 let guestSessionName=null;
 let user=null,profile=null,players=[],rooms=[],roomsUnsub=null,roomUnsub=null,room=null,roomId=null,roomRef=null,toastTimer=null,selectedCountry=null,pendingSpinCountry=null,lastWheelCountry=null,lastWheelSpinAt=0,lastPickAnnouncementId=null,lastSpinAnnouncementId=null,pendingSpinAnnouncementId=null,pickAnnouncementTimer=null,spinCooldownTimer=null,roomSnapshotInitialized=false;
 const isAdmin=()=>!!user&&user.uid===ADMIN_UID;
