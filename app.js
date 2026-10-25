@@ -7,7 +7,29 @@ const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const CLUBS=["Galatasaray","Fenerbahçe","Beşiktaş","Trabzonspor","Barcelona","Real Madrid","Inter","PSG","Bayern Münih","Manchester City","Arsenal","Liverpool","Atlético Madrid","Juventus","Manchester United"];
 const WHEEL_SLICES=["Galatasaray","PAS","Arsenal","Atlético Madrid","KORUMA","Beşiktaş","Real Madrid","PAS","Juventus","PSG","Fenerbahçe","Manchester City","Bayern Münih","Inter","TAKAS","Trabzonspor","Liverpool","Barcelona","Manchester United","KORUMA"];
-const COLORS=['#ed6a5a','#f4a261','#e9c46a','#8ab17d','#2a9d8f','#4d96ff','#6c63ff','#c77dff','#e76f51','#457b9d','#f28482','#90be6d','#e0a458','#6c9bd2','#d17b88','#5865a8','#2a9d8f','#2a9d8f','#a66dd4','#a66dd4'];
+const CLUB_COLORS={
+  "Galatasaray": {base:"#A90432", accent:"#FDB912", text:"#FDB912"},
+  "Fenerbahçe": {base:"#FFED00", accent:"#002D72", text:"#002D72"},
+  "Beşiktaş": {base:"#17191F", accent:"#FFFFFF", text:"#FFFFFF"},
+  "Trabzonspor": {base:"#6B1839", accent:"#75AADB", text:"#75AADB"},
+  "Barcelona": {base:"#004D98", accent:"#A50044", text:"#F5C400"},
+  "Real Madrid": {base:"#E8D9A9", accent:"#00529F", text:"#00529F"},
+  "Inter": {base:"#00529F", accent:"#000000", text:"#FFFFFF"},
+  "PSG": {base:"#004170", accent:"#E30613", text:"#FFFFFF"},
+  "Bayern Münih": {base:"#DC052D", accent:"#FFFFFF", text:"#FFFFFF"},
+  "Manchester City": {base:"#6CABDD", accent:"#1C2C5B", text:"#1C2C5B"},
+  "Arsenal": {base:"#EF0107", accent:"#FFFFFF", text:"#FFFFFF"},
+  "Liverpool": {base:"#C8102E", accent:"#00B2A9", text:"#FFFFFF"},
+  "Atlético Madrid": {base:"#CB3524", accent:"#FFFFFF", text:"#FFFFFF"},
+  "Juventus": {base:"#252525", accent:"#FFFFFF", text:"#FFFFFF"},
+  "Manchester United": {base:"#DA291C", accent:"#FBE122", text:"#FBE122"}
+};
+const SPECIAL_SLICE_COLORS={
+  "PAS": {base:"#596579", accent:"#D9E2F2", text:"#FFFFFF"},
+  "KORUMA": {base:"#7026D9", accent:"#D8B4FE", text:"#FFFFFF"},
+  "TAKAS": {base:"#F59E0B", accent:"#7C2D12", text:"#3B1608"}
+};
+function wheelSliceStyle(slice){return SPECIAL_SLICE_COLORS[slice]||CLUB_COLORS[slice]||{base:"#334155",accent:"#E2E8F0",text:"#FFFFFF"};}
 let guestSessionName=null;
 let user=null,profile=null,players=[],rooms=[],roomsUnsub=null,roomUnsub=null,room=null,roomId=null,roomRef=null,toastTimer=null,selectedCountry=null,pendingSpinCountry=null,lastWheelCountry=null,lastWheelSpinAt=0,lastPickAnnouncementId=null,lastSpinAnnouncementId=null,pendingSpinAnnouncementId=null,pickAnnouncementTimer=null,spinCooldownTimer=null,roomSnapshotInitialized=false;
 const isAdmin=()=>!!user&&user.uid===ADMIN_UID;
@@ -15,25 +37,25 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function msg(text,error=false){const t=$('toast');if(!t)return;clearTimeout(toastTimer);if(!error){t.className='toast';return}t.textContent=text;t.className='toast show error';toastTimer=setTimeout(()=>t.className='toast',4500)}
 const CLUB_CRESTS={
  'Galatasaray':'./assets/crests/Galatasaray.png',
- 'Fenerbahçe':'./assets/crests/Fenerbahçe.png',
- 'Beşiktaş':'./assets/crests/Beşiktaş.png',
- 'Trabzonspor':'./assets/crests/Trabzonspor.png',
- 'Barcelona':'./assets/crests/Barcelona.png',
- 'Real Madrid':'./assets/crests/Real Madrid.png',
- 'Inter':'./assets/crests/İnter.png',
- 'PSG':'./assets/crests/PSG.png',
- 'Bayern Münih':'./assets/crests/Bayern Münih.png',
- 'Manchester City':'./assets/crests/Manchester City.png',
  'Arsenal':'./assets/crests/Arsenal.png',
- 'Liverpool':'./assets/crests/Liverpool.png',
+ 'Beşiktaş':'./assets/crests/Beşiktaş.png',
  'Atlético Madrid':'./assets/crests/Atletico Madrid.png',
+ 'Real Madrid':'./assets/crests/Real Madrid.png',
  'Juventus':'./assets/crests/Juventus.png',
+ 'PSG':'./assets/crests/PSG.png',
+ 'Fenerbahçe':'./assets/crests/Fenerbahçe.png',
+ 'Manchester City':'./assets/crests/Manchester City.png',
+ 'Bayern Münih':'./assets/crests/Bayern Münih.png',
+ 'Inter':'./assets/crests/Inter.png',
+ 'Trabzonspor':'./assets/crests/Trabzonspor.png',
+ 'Liverpool':'./assets/crests/Liverpool.png',
+ 'Barcelona':'./assets/crests/Barcelona.png',
  'Manchester United':'./assets/crests/Manchester United.png'
 };
-const SPECIAL_SPIN_RESULTS={PAS:{label:'PAS',src:'./assets/crests/PAS.png'},KORUMA:{label:'KORUMA',src:'./assets/crests/KORUMA.png'},TAKAS:{label:'TAKAS',src:'./assets/crests/TAKAS.png'}};
+const SPECIAL_SPIN_RESULTS={PAS:{icon:'⏭️',label:'PAS'},KORUMA:{icon:'🛡️',label:'KORUMA'},TAKAS:{icon:'🔄',label:'TAKAS'}};
 function crestFallback(result){const initials=({'Galatasaray':'GS','Arsenal':'ARS','Beşiktaş':'BJK','Atlético Madrid':'ATM','Real Madrid':'RMA','Juventus':'JUV','PSG':'PSG','Fenerbahçe':'FB','Manchester City':'MCI','Bayern Münih':'FCB','Inter':'INT','Trabzonspor':'TS','Liverpool':'LIV','Barcelona':'BAR','Manchester United':'MUN'})[result]||'FC';return `<div class="spin-crest-fallback" aria-label="${esc(result)} arması"><span>${esc(initials)}</span></div>`}
 function presentAnnouncement(html,duration){const box=$('pickAnnouncement');if(!box)return;box.innerHTML=html;box.style.animationDuration=`${duration/1000}s`;box.classList.remove('hidden','pick-announcement-show');void box.offsetWidth;box.classList.add('pick-announcement-show');clearTimeout(pickAnnouncementTimer);pickAnnouncementTimer=setTimeout(()=>{box.classList.remove('pick-announcement-show');box.classList.add('hidden')},duration)}
-function showSpinAnnouncement(announcement){if(!announcement?.id||announcement.id===lastSpinAnnouncementId)return;lastSpinAnnouncementId=announcement.id;const result=String(announcement.result||'');const special=SPECIAL_SPIN_RESULTS[result];const crestSrc=special?.src||CLUB_CRESTS[result];let middle='';if(crestSrc){middle=`<img class="${special?'spin-special-crest':'spin-club-crest'}" src="${crestSrc}" alt="${esc(special?.label||result)} logosu" onerror="this.outerHTML=window.__spinCrestFallback('${result.replace(/'/g, '&#39;')}')">`}else{middle=`<div class="spin-special-icon">🎡</div>`}presentAnnouncement(`<div class="pick-announcement-main"><div class="pick-announcement-user">${esc(announcement.managerName||'Menajer')}</div><div class="pick-announcement-crest">${middle}</div><div class="pick-announcement-result">${esc(special?.label||result)}</div></div>`,3000)}
+function showSpinAnnouncement(announcement){if(!announcement?.id||announcement.id===lastSpinAnnouncementId)return;lastSpinAnnouncementId=announcement.id;const result=String(announcement.result||'');const special=SPECIAL_SPIN_RESULTS[result];let middle='';if(special){middle=`<div class="spin-special-icon" aria-label="${special.label}">${special.icon}</div>`}else if(CLUB_CRESTS[result]){middle=`<img class="spin-club-crest" src="${CLUB_CRESTS[result]}" alt="${esc(result)} arması" onerror="this.outerHTML=window.__spinCrestFallback('${result.replace(/'/g, '&#39;')}')">`}else{middle=`<div class="spin-special-icon">🎡</div>`}presentAnnouncement(`<div class="pick-announcement-main"><div class="pick-announcement-user">${esc(announcement.managerName||'Menajer')}</div><div class="pick-announcement-crest">${middle}</div><div class="pick-announcement-result">${esc(special?.label||result)}</div></div>`,3000)}
 function queueSpinAnnouncement(announcement){if(!announcement?.id||announcement.id===lastSpinAnnouncementId||announcement.id===pendingSpinAnnouncementId)return;pendingSpinAnnouncementId=announcement.id;const elapsed=Math.max(0,Date.now()-Number(announcement.at||Date.now()));const delay=Math.max(0,3300-elapsed);setTimeout(()=>{if(pendingSpinAnnouncementId!==announcement.id)return;pendingSpinAnnouncementId=null;if(room?.lastSpinAnnouncement?.id===announcement.id)showSpinAnnouncement(announcement)},delay)}
 function showPickAnnouncement(announcement){if(!announcement?.id||announcement.id===lastPickAnnouncementId)return;lastPickAnnouncementId=announcement.id;presentAnnouncement(`<div class="pick-announcement-main pick-player-announcement"><div class="pick-announcement-user">${esc(announcement.managerName||'Menajer')}</div><div class="pick-announcement-club">${esc(announcement.club||'Kulüp')}</div><div class="pick-announcement-player">${esc(announcement.playerName||'Futbolcu')}</div></div>`,5000)}
 window.__spinCrestFallback=(result)=>crestFallback(result);
@@ -134,7 +156,25 @@ function awardByDifference(home,homeScore,away,awayScore,key,threshold,reason,ad
 }
 function buildFixtures(teamIds){let a=[...teamIds];if(a.length%2)a.push(null);let n=a.length,rot=[...a],rounds=[];for(let r=0;r<n-1;r++){let m=[];for(let i=0;i<n/2;i++){let x=rot[i],y=rot[n-1-i];if(x&&y){let home=(r+i)%2===0?x:y;m.push({homeUid:home,awayUid:home===x?y:x,round:r+1,leg:1})}}rounds.push(m);rot=[rot[0],rot[n-1],...rot.slice(1,n-1)]}const first=rounds.flat();const second=rounds.map((ms,i)=>ms.map(m=>({homeUid:m.awayUid,awayUid:m.homeUid,round:rounds.length+i+1,leg:2}))).flat();return [...first,...second].map((m,i)=>({...m,id:'match-'+(i+1),played:false}))}
 function standings(){const teams=(room?.memberOrder||[]).map(id=>({id,name:userName(id),squad:rosterFor(id),formation:'4-2-3-1',tactic:room?.tactics?.[id]?.tactic||'balanced',played:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}));for(const m of room?.league?.fixtures||[]){const r=room?.league?.results?.[m.id];if(!r)continue;const h=teams.find(t=>t.id===m.homeUid),a=teams.find(t=>t.id===m.awayUid);if(!h||!a)continue;h.played++;a.played++;h.gf+=r.homeGoals;h.ga+=r.awayGoals;a.gf+=r.awayGoals;a.ga+=r.homeGoals;if(r.homeGoals>r.awayGoals){h.w++;h.pts+=3;a.l++}else if(r.homeGoals<r.awayGoals){a.w++;a.pts+=3;h.l++}else{h.d++;a.d++;h.pts++;a.pts++}}return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga)||b.gf-a.gf)}
-function drawWheel(){const c=$('wheelCanvas');if(!c)return;const ctx=c.getContext('2d'),cx=c.width/2,cy=c.height/2,r=196,n=WHEEL_SLICES.length;ctx.clearRect(0,0,c.width,c.height);for(let i=0;i<n;i++){const a=2*Math.PI/n,start=-Math.PI/2+i*a,end=start+a;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=COLORS[i%COLORS.length];ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(start+a/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font=`bold ${WHEEL_SLICES[i].length>10?9:11}px system-ui`;ctx.shadowColor='#000';ctx.shadowBlur=3;ctx.fillText(WHEEL_SLICES[i],r-10,4);ctx.restore()}ctx.beginPath();ctx.arc(cx,cy,43,0,Math.PI*2);ctx.fillStyle='#101827';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke()}
+function drawWheel(){
+ const c=$('wheelCanvas');if(!c)return;
+ const ctx=c.getContext('2d'),cx=c.width/2,cy=c.height/2,r=196,n=WHEEL_SLICES.length;
+ ctx.clearRect(0,0,c.width,c.height);
+ // Outer metallic rim and neon halo
+ ctx.save();ctx.beginPath();ctx.arc(cx,cy,r+7,0,Math.PI*2);ctx.strokeStyle='#62efff';ctx.lineWidth=4;ctx.shadowColor='#45DDFB';ctx.shadowBlur=18;ctx.stroke();ctx.restore();
+ for(let i=0;i<n;i++){
+  const slice=WHEEL_SLICES[i],style=wheelSliceStyle(slice),a=2*Math.PI/n,start=-Math.PI/2+i*a,end=start+a;
+  ctx.save();ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();
+  const grad=ctx.createRadialGradient(cx,cy,36,cx,cy,r);grad.addColorStop(0,style.base);grad.addColorStop(.72,style.base);grad.addColorStop(1,style.accent);
+  ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle='#EAFBFF';ctx.lineWidth=1.6;ctx.shadowColor=style.accent;ctx.shadowBlur=5;ctx.stroke();ctx.restore();
+  // Subtle glossy sweep along the outer edge of each segment
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,r-3,start+.025,end-.025);ctx.strokeStyle='rgba(255,255,255,.24)';ctx.lineWidth=2;ctx.stroke();ctx.restore();
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(start+a/2);ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillStyle=style.text;ctx.font=`800 ${slice.length>13?9:slice.length>10?10:12}px system-ui`;
+  ctx.shadowColor='#000000B3';ctx.shadowBlur=4;ctx.lineWidth=2.5;ctx.strokeStyle='rgba(0,0,0,.28)';ctx.strokeText(slice,r-13,0);ctx.fillText(slice,r-13,0);ctx.restore();
+ }
+ // Inner dark hub with layered metallic and neon rings
+ ctx.save();ctx.beginPath();ctx.arc(cx,cy,49,0,Math.PI*2);ctx.fillStyle='#080D19';ctx.shadowColor='#58E8FF';ctx.shadowBlur=18;ctx.fill();ctx.strokeStyle='#EAFBFF';ctx.lineWidth=3;ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,42,0,Math.PI*2);ctx.strokeStyle='#C8F169';ctx.lineWidth=2;ctx.shadowColor='#C8F169';ctx.shadowBlur=10;ctx.stroke();ctx.restore();
+}
 function drawWheelSpin(slice){const c=$('wheelCanvas');const idx=WHEEL_SLICES.indexOf(slice);if(idx<0)return;const a=2*Math.PI/WHEEL_SLICES.length;const center=-Math.PI/2+(idx+.5)*a;const angle=-(center+Math.PI/2);c.style.transition='transform 3.2s cubic-bezier(.12,.78,.12,1)';c.style.transform=`rotate(${360*5+angle*180/Math.PI}deg)`;setTimeout(()=>{c.style.transition='none';c.style.transform=`rotate(${angle*180/Math.PI}deg)`},3300)}
 function renderRooms(){const list=$('roomList');if(!rooms.length){list.innerHTML='<div class="empty-state">Şu anda açık oda yok.</div>';return}list.innerHTML=rooms.map(r=>`<div class="room-card"><div><b>${esc(r.name||'Çark Futbol Odası')}</b><small>${(r.memberOrder||[]).length}/${r.capacity||4} oyuncu · ${r.status==='waiting'?'Oyuncular bekleniyor':r.status==='drafting'?'Draft devam ediyor':r.status==='finished'?'Lig aşaması':'Oda kapalı'}</small></div><button class="btn ${r.memberOrder?.includes(user.uid)?'secondary':'primary'}" data-enter="${r.id}">${r.memberOrder?.includes(user.uid)?'Odayı aç':'Katıl'}</button></div>`).join('');list.querySelectorAll('[data-enter]').forEach(b=>b.onclick=()=>enterRoom(b.dataset.enter))}
 function renderRoom(){if(!room)return;$('roomView').classList.remove('hidden');$('spinResult').classList.toggle('hidden',room.status==='finished');if(room.lastSpin?.at&&room.lastSpin.at!==lastWheelSpinAt){drawWheelSpin(room.lastSpin.slice);lastWheelSpinAt=room.lastSpin.at;const spinAt=room.lastSpin.at;clearTimeout(spinCooldownTimer);spinCooldownTimer=setTimeout(()=>{if(room?.lastSpin?.at===spinAt)renderRoom()},3450)}$('roomTitle').textContent=room.name||'Çark Futbol Odası';$('roomCode').textContent=room.code||roomId;const closeBtn=$('closeRoomBtn');if(closeBtn){closeBtn.classList.toggle('hidden',!isAdmin());closeBtn.onclick=closeRoom;} $('roomStatus').textContent=({waiting:'Oyuncuların katılması bekleniyor',drafting:'Draft devam ediyor',finished:'Kadrolar tamamlandı · Lig aşaması',cancelled:'Oda iptal edildi'})[room.status]||room.status;$('startDraftBtn').classList.toggle('hidden',!(isAdmin()||room.ownerUid===user.uid)||room.status!=='waiting'||room.memberOrder.length<2);$('startDraftBtn').textContent='Draftı başlat';$('turnHeading').textContent=room.status==='drafting'?`${userName(currentTurnUid())} seçiyor · ${stageMessage(room.picks||[],room.memberOrder||[])}`:'Draft başlamadı';$('turnPill').textContent=room.status==='drafting'?(isMyTurn()?'Sıra sende':`Sıra: ${userName(currentTurnUid())}`):room.status==='finished'?'Draft tamamlandı':'Başlamayı bekliyor';$('spinBtn').disabled=!isMyTurn();$('spinBtn').textContent='🎡 Çarkı çevir';$('pickPanel').classList.toggle('hidden',!(room.pendingPick&&room.pendingPick.uid===user.uid));if(room.pendingPick&&room.pendingPick.uid===user.uid&&room.pendingPick.club){selectedCountry=room.pendingPick.club;renderPlayerOptions(selectedCountry)}else if(room.pendingPick){$('spinResult').textContent=`${userName(room.pendingPick.uid)} çark sonucunu uyguluyor: ${room.pendingPick.slice}.`}else if(room.status==='drafting'&&isMyTurn())$('spinResult').textContent=`Sıra sende! ${stageMessage(room.picks||[],room.memberOrder||[])}. Çarkı çevir.`;else if(room.status==='drafting'&&starterCount(room.picks||[],user.uid)>=11)$('spinResult').textContent='İlk 11’in tamamlandı. Diğer oyuncuların da ilk 11’lerini tamamlamasını bekle.';else if(room.status==='waiting')$('spinResult').textContent='Oda sahibi draftı başlattığında çark aktif olacak.';else $('spinResult').textContent='';
