@@ -149,22 +149,22 @@ function simulateMatch(home,away){
  // Ev sahibi avantajı: ev sahibinin ilk 11 toplam overall puanı düşükse +1 gol.
  if(h.overallTotal<a.overallTotal)addGoal(home,h,'Ev sahibi avantajı');
  // Toplam ilk 11 overall üstünlüğü: +1 gol. Eşitlikte bonus yok.
- if(h.overallTotal>a.overallTotal)addGoal(home,h,'Toplam overall üstünlüğü');
- else if(a.overallTotal>h.overallTotal)addGoal(away,a,'Toplam overall üstünlüğü');
+ if(h.overallTotal-a.overallTotal>=12)addGoal(home,h,'Toplam overall üstünlüğü (12+)');
+ else if(a.overallTotal-h.overallTotal>=12)addGoal(away,a,'Toplam overall üstünlüğü (12+)');
  // Savunma: kaleci + 2 stoper + sağ bek + sol bek; defense toplamı.
  awardByDifference(home,h,away,a,'defenseTotal',8,'Savunma üstünlüğü',addGoal);
- // Orta saha: 2 merkez orta saha + ofansif orta saha; overall toplamı.
- awardByDifference(home,h,away,a,'midfieldTotal',6,'Orta saha üstünlüğü',addGoal);
+ // Orta saha/kanat overall: 2 merkez orta saha + ofansif orta saha + sağ kanat + sol kanat.
+ awardByDifference(home,h,away,a,'midfieldTotal',6,'Orta saha ve kanat overall üstünlüğü (6+)',addGoal);
  // Hücum: sağ kanat + sol kanat + santrfor + ofansif orta saha; attack toplamı.
  awardByDifference(home,h,away,a,'attackTotal',6,'Hücum üstünlüğü',addGoal);
  // Kanat Bindirmeleri: sağ bek + sol bek + sağ kanat + sol kanat; attack toplamı.
- awardByDifference(home,h,away,a,'wingOverlapTotal',7,'Kanat Bindirmeleri',addGoal);
- // Toplam ilk 11 overall puanı düşük olan ev sahibine yalnızca omurga hesabında +10 puan.
- const hSpine=h.spineTotal+(h.overallTotal<a.overallTotal?10:0);
+ awardByDifference(home,h,away,a,'wingOverlapTotal',8,'Bek ve kanat hücumu üstünlüğü (8+)',addGoal);
+ // Ev sahibinin toplam ilk 11 overall gücü düşükse omurga puanına +20 eklenir.
+ const hSpine=h.spineTotal+(h.overallTotal<a.overallTotal?20:0);
  const aSpine=a.spineTotal;
  const spineDiff=hSpine-aSpine;
- if(spineDiff>=7)addGoal(home,h,'Omurga üstünlüğü');
- else if(spineDiff<=-7)addGoal(away,a,'Omurga üstünlüğü');
+ if(spineDiff>=8)addGoal(home,h,'Omurga üstünlüğü (8+)');
+ else if(spineDiff<=-8)addGoal(away,a,'Omurga üstünlüğü (8+)');
  events.sort((x,y)=>x.minute-y.minute);
  return {homeGoals,awayGoals,events};
 }
@@ -176,7 +176,7 @@ function scoreTeam(team){
  const cbs=by('Stoper'),cms=by('Merkez orta saha');
  const overallTotal=sum(squad,'overall');
  const defenseTotal=sum([keeper,...cbs.slice(0,2),by('Sağ bek')[0],by('Sol bek')[0]].filter(Boolean),'defense');
- const midfieldTotal=sum([...cms.slice(0,2),by('Ofansif orta saha')[0]].filter(Boolean),'overall');
+ const midfieldTotal=sum([...cms.slice(0,2),by('Ofansif orta saha')[0],by('Sağ kanat')[0],by('Sol kanat')[0]].filter(Boolean),'overall');
  const attackTotal=sum([by('Sağ kanat')[0],by('Sol kanat')[0],by('Santrfor')[0],by('Ofansif orta saha')[0]].filter(Boolean),'attack');
  const wingOverlapTotal=sum([by('Sağ bek')[0],by('Sol bek')[0],by('Sağ kanat')[0],by('Sol kanat')[0]].filter(Boolean),'attack');
  const bestCb=cbs.slice().sort((x,y)=>Number(y.overall||0)-Number(x.overall||0))[0];
