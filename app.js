@@ -202,22 +202,11 @@ function renderPlayerOptions(country){const avail=validPickCandidates(country,ro
 function playerCard(p){p=normalizePlayer(p||{});return `<div class="player-card"><div class="player-top"><div><b>${esc(p.name)}</b><small>${esc(p.club||p.country)} · ${esc(p.position)}</small></div></div></div>`}
 async function advanceEmptyCountry(club){if(!room||!room.pendingPick||room.pendingPick.club!==club||room.pendingPick.uid!==currentTurnUid())return;try{await runTransaction(db,async tx=>{const s=await tx.get(roomRef);if(!s.exists())return;const d=s.data();if(!d.pendingPick||d.pendingPick.club!==club)return;const candidates=validPickCandidates(club,d.picks||[],d.pendingPick.uid,d.memberOrder||[]);if(candidates.length)return;const next=nextTurnIndex(d.memberOrder||[],d.picks||[],d.turnIndex);tx.update(roomRef,{pendingPick:null,turnIndex:next,turnStartedAt:Date.now(),lastSpin:{...(d.lastSpin||{}),slice:club,at:Date.now()},updatedAt:serverTimestamp()})});}catch(e){console.error(e)}}
 function scheduleTurnTimeout(){
- clearTimeout(turnTimeoutTimer);turnTimeoutTimer=null;
- if(!room||room.status!=='drafting'||room.pendingPick||!room.memberOrder?.length)return;
- const uid=currentTurnUid();if(!uid||starterCount(room.picks||[],uid)>=11)return;
- const turnKey=`${room.id||roomId}:${room.turnIndex}:${uid}`;
- if(!room.turnStartedAt){
-  const started=Date.now();room.turnStartedAt=started;
-  runTransaction(db,async tx=>{const snap=await tx.get(roomRef);if(!snap.exists())return;const d=snap.data();if(d.status==='drafting'&&d.turnIndex===room.turnIndex&&d.memberOrder?.[d.turnIndex%d.memberOrder.length]===uid&&!d.turnStartedAt)tx.update(roomRef,{turnStartedAt:started,updatedAt:serverTimestamp()})}).catch(e=>console.warn('Tur süresi başlatılamadı:',e));
- }
- if(scheduledTurnKey===turnKey&&turnTimeoutTimer)return;
- scheduledTurnKey=turnKey;
- const deadline=Number(room.turnStartedAt)||Date.now();
- const remaining=Math.max(0,deadline+30000-Date.now());
- turnTimeoutTimer=setTimeout(()=>{turnTimeoutTimer=null;spinFor(uid,true).catch(e=>console.warn('Otomatik çark çevrilemedi:',e));},remaining);
+ // Çark sırası geldiğinde otomatik çevirme yapılmaz; oyuncu kendisi çevirmelidir.
+ clearTimeout(turnTimeoutTimer);turnTimeoutTimer=null;scheduledTurnKey=null;
 }
-async function spin(){return spinFor(user?.uid,false)}
-async function spinFor(requestedUid,automatic=false){
+async function spin(){return spinFor(user?.uid)}
+async function spinFor(requestedUid){
  if(!room||!roomRef)return;
  try{
   await runTransaction(db,async tx=>{
@@ -225,7 +214,7 @@ async function spinFor(requestedUid,automatic=false){
    if(d.status!=='drafting'||!d.memberOrder?.length)throw new Error('Draft aktif değil.');
    const uid=d.memberOrder[d.turnIndex%d.memberOrder.length];
    if(uid!==requestedUid)throw new Error('Sıra değişti; güncel sırayı bekle.');
-   if(!automatic&&uid!==user?.uid)throw new Error('Şu anda sıra sende değil.');
+   if(uid!==user?.uid)throw new Error('Şu anda sıra sende değil.');
    if(d.pendingPick)throw new Error('Mevcut seçim tamamlanıyor.');
    if(starterCount(d.picks||[],uid)>=11)throw new Error('Bu oyuncunun ilk 11’i tamamlandı.');
    const started=Number(d.turnStartedAt||0);
@@ -233,7 +222,7 @@ async function spinFor(requestedUid,automatic=false){
    if(!automatic&&d.lastSpin?.at&&Date.now()-Number(d.lastSpin.at)<3400)throw new Error('Çarkın durmasını bekle.');
    const slice=WHEEL_SLICES[Math.floor(Math.random()*WHEEL_SLICES.length)],at=Date.now();
    const managerName=d.members?.[uid]?.name||'Menajer';
-   const spinAnnouncement={id:`spin_${at}_${uid}`,uid,managerName,result:slice,at,automatic};
+   const spinAnnouncement={id:`spin_${at}_${uid}`,uid,managerName,result:slice,at,automatic:false};
    const picks=[...(d.picks||[])];let updates={pendingPick:null,lastSpin:{uid,slice,at,automatic},lastSpinAnnouncement:spinAnnouncement,turnStartedAt:at,updatedAt:serverTimestamp()};
    if(CLUBS.includes(slice)){
     const candidates=validPickCandidates(slice,picks,uid,d.memberOrder||[]);
@@ -256,7 +245,7 @@ async function spinFor(requestedUid,automatic=false){
    if(done){updates.status='finished';updates.postDraftPhase='protection';updates.protectionDone={};updates.swapRequests=[];updates.swapConfirmed={};updates.swapResolved=false;}
    tx.update(roomRef,updates);
   });
- }catch(e){if(!automatic)msg(e.message||'Çark çevrilemedi.',true);else console.warn(e.message||e);}
+ }catch(e){msg(e.message||'Çark çevrilemedi.',true);}
 }
 async function pickPlayer(){msg('Oyuncu seçimi artık çark sonucu geldiğinde otomatik yapılıyor.');}
 function closePostDraftModal(){const modal=$('postDraftModal');if(modal)modal.remove();postDraftModalStage=null;}
