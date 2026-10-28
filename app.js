@@ -202,11 +202,21 @@ function renderPlayerOptions(country){const avail=validPickCandidates(country,ro
 function playerCard(p){p=normalizePlayer(p||{});return `<div class="player-card"><div class="player-top"><div><b>${esc(p.name)}</b><small>${esc(p.club||p.country)} · ${esc(p.position)}</small></div></div></div>`}
 async function advanceEmptyCountry(club){if(!room||!room.pendingPick||room.pendingPick.club!==club||room.pendingPick.uid!==currentTurnUid())return;try{await runTransaction(db,async tx=>{const s=await tx.get(roomRef);if(!s.exists())return;const d=s.data();if(!d.pendingPick||d.pendingPick.club!==club)return;const candidates=validPickCandidates(club,d.picks||[],d.pendingPick.uid,d.memberOrder||[]);if(candidates.length)return;const next=nextTurnIndex(d.memberOrder||[],d.picks||[],d.turnIndex);tx.update(roomRef,{pendingPick:null,turnIndex:next,turnStartedAt:Date.now(),lastSpin:{...(d.lastSpin||{}),slice:club,at:Date.now()},updatedAt:serverTimestamp()})});}catch(e){console.error(e)}}
 function scheduleTurnTimeout(){
- // Çark sırası geldiğinde otomatik çevirme yapılmaz; oyuncu kendisi çevirmelidir.
- clearTimeout(turnTimeoutTimer);turnTimeoutTimer=null;scheduledTurnKey=null;
+ clearTimeout(turnTimeoutTimer);turnTimeoutTimer=null;
+ if(!room||room.status!=='drafting'||room.pendingPick||!room.memberOrder?.length)return;
+ const uid=currentTurnUid();if(!uid||starterCount(room.picks||[],uid)>=11)return;
+ // Çark otomatik çevrilmez. Sırası gelen oyuncu butona basarak kendisi çevirir.
+ const turnKey=`${room.id||roomId}:${room.turnIndex}:${uid}`;
+ if(scheduledTurnKey===turnKey)return;
+ scheduledTurnKey=turnKey;
+ if(!room.turnStartedAt){
+  const started=Date.now();room.turnStartedAt=started;
+  runTransaction(db,async tx=>{const snap=await tx.get(roomRef);if(!snap.exists())return;const d=snap.data();if(d.status==='drafting'&&d.turnIndex===room.turnIndex&&d.memberOrder?.[d.turnIndex%d.memberOrder.length]===uid&&!d.turnStartedAt)tx.update(roomRef,{turnStartedAt:started,updatedAt:serverTimestamp()})}).catch(e=>console.warn('Tur başlangıcı kaydedilemedi:',e));
+ }
 }
-async function spin(){return spinFor(user?.uid)}
-async function spinFor(requestedUid){
+async function spin(){if(!user?.uid){msg('Önce giriş yapmalısın.',true);return;}return spinFor(user.uid,false)}
+async function spinFor(requestedUid,automatic=false){
+ if(automatic)return; // Otomatik çevirme kapalı; yalnızca oyuncunun butonuyla çevrilir.
  if(!room||!roomRef)return;
  try{
   await runTransaction(db,async tx=>{
@@ -214,7 +224,7 @@ async function spinFor(requestedUid){
    if(d.status!=='drafting'||!d.memberOrder?.length)throw new Error('Draft aktif değil.');
    const uid=d.memberOrder[d.turnIndex%d.memberOrder.length];
    if(uid!==requestedUid)throw new Error('Sıra değişti; güncel sırayı bekle.');
-   if(uid!==user?.uid)throw new Error('Şu anda sıra sende değil.');
+   if(!automatic&&uid!==user?.uid)throw new Error('Şu anda sıra sende değil.');
    if(d.pendingPick)throw new Error('Mevcut seçim tamamlanıyor.');
    if(starterCount(d.picks||[],uid)>=11)throw new Error('Bu oyuncunun ilk 11’i tamamlandı.');
    const started=Number(d.turnStartedAt||0);
@@ -222,7 +232,7 @@ async function spinFor(requestedUid){
    if(!automatic&&d.lastSpin?.at&&Date.now()-Number(d.lastSpin.at)<3400)throw new Error('Çarkın durmasını bekle.');
    const slice=WHEEL_SLICES[Math.floor(Math.random()*WHEEL_SLICES.length)],at=Date.now();
    const managerName=d.members?.[uid]?.name||'Menajer';
-   const spinAnnouncement={id:`spin_${at}_${uid}`,uid,managerName,result:slice,at,automatic:false};
+   const spinAnnouncement={id:`spin_${at}_${uid}`,uid,managerName,result:slice,at,automatic};
    const picks=[...(d.picks||[])];let updates={pendingPick:null,lastSpin:{uid,slice,at,automatic},lastSpinAnnouncement:spinAnnouncement,turnStartedAt:at,updatedAt:serverTimestamp()};
    if(CLUBS.includes(slice)){
     const candidates=validPickCandidates(slice,picks,uid,d.memberOrder||[]);
@@ -245,7 +255,7 @@ async function spinFor(requestedUid){
    if(done){updates.status='finished';updates.postDraftPhase='protection';updates.protectionDone={};updates.swapRequests=[];updates.swapConfirmed={};updates.swapResolved=false;}
    tx.update(roomRef,updates);
   });
- }catch(e){msg(e.message||'Çark çevrilemedi.',true);}
+ }catch(e){if(!automatic)msg(e.message||'Çark çevrilemedi.',true);else console.warn(e.message||e);}
 }
 async function pickPlayer(){msg('Oyuncu seçimi artık çark sonucu geldiğinde otomatik yapılıyor.');}
 function closePostDraftModal(){const modal=$('postDraftModal');if(modal)modal.remove();postDraftModalStage=null;}
