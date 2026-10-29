@@ -139,43 +139,73 @@ function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
 function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min}
 function choose(arr){return arr.length?arr[randInt(0,arr.length-1)]:null}
 function simulateMatch(home,away){
- // Çark Futbol güncel 6 gol kuralı: her kural bağımsız olarak en fazla 1 gol üretir.
+ // Her maçta takımın kaydedilmiş taktik/pas/pres tercihleri ilgili gol kuralına uygulanır.
  const h=scoreTeam(home),a=scoreTeam(away);
  let homeGoals=0,awayGoals=0;
- const events=[];
+ const events=[],ruleAudit=[];
  const addGoal=(team,profile,reason)=>{
   const scorers=profile.squad.filter(p=>String(p.position||'').trim()!=='Kaleci');
   const scorer=choose(scorers);
   events.push({minute:randInt(1,90),type:'goal',team:team.id,playerId:scorer?.id||null,playerName:scorer?.name||'Bilinmeyen oyuncu',reason,text:`${scorer?.name||'Bilinmeyen oyuncu'}`});
   if(team.id===h.id)homeGoals++;else awayGoals++;
  };
- // 1. Ev sahibi Overall toplamı rakibinden düşükse ev sahibi +1 gol.
- if(h.overallTotal<a.overallTotal)addGoal(home,h,'1. Ev sahibi Overall dezavantajı');
- // 2. Overall toplamında en az 20 puan üstün olan takım +1 gol.
- if(h.overallTotal-a.overallTotal>=20)addGoal(home,h,'2. Takım Overall üstünlüğü (20+)');
- else if(a.overallTotal-h.overallTotal>=20)addGoal(away,a,'2. Takım Overall üstünlüğü (20+)');
- // 3. Kaleci + iki stoper + sağ bek + sol bek toplam DEF puanı; en az 15 fark.
+ const addAudit=(rule,homeValue,awayValue,threshold,homeEffects,awayEffects,winner)=>ruleAudit.push({rule,homeValue,awayValue,threshold,homeEffects,awayEffects,winner});
+ const teamLabel=team=>team.name||team.id;
+
+ // 1. Ev sahibi Overall dezavantajı. Taktik bonusları bu kurala uygulanmaz.
+ let winner=null;
+ if(h.overallTotal<a.overallTotal){addGoal(home,h,'1. Ev sahibi Overall dezavantajı');winner=teamLabel(home)}
+ addAudit('1. Ev sahibi Overall dezavantajı',h.overallTotal,a.overallTotal,'Ev sahibi Overall < rakip Overall','Taktik bonusu uygulanmaz','Taktik bonusu uygulanmaz',winner);
+
+ // 2. Takım Overall üstünlüğü. Taktik bonusları bu kurala uygulanmaz.
+ winner=null;
+ if(h.overallTotal-a.overallTotal>=20){addGoal(home,h,'2. Takım Overall üstünlüğü (20+)');winner=teamLabel(home)}
+ else if(a.overallTotal-h.overallTotal>=20){addGoal(away,a,'2. Takım Overall üstünlüğü (20+)');winner=teamLabel(away)}
+ addAudit('2. Takım Overall üstünlüğü',h.overallTotal,a.overallTotal,20,'Taktik bonusu uygulanmaz','Taktik bonusu uygulanmaz',winner);
+
+ // 3. Savunma: Defansif +15, Uzun Top +10; rakibin Önde Pres'i -10.
+ const hDefEffects=[home.tactic==='defensive'?'+15 Defansif':'',home.passFocus==='longBall'?'+10 Uzun Top':'',away.pressType==='highPress'?'−10 rakibin Önde Pres’i':''].filter(Boolean);
+ const aDefEffects=[away.tactic==='defensive'?'+15 Defansif':'',away.passFocus==='longBall'?'+10 Uzun Top':'',home.pressType==='highPress'?'−10 rakibin Önde Pres’i':''].filter(Boolean);
  h.defenseTotal += Number(home.tactic==='defensive'?15:0) + Number(home.passFocus==='longBall'?10:0) - Number(away.pressType==='highPress'?10:0);
  a.defenseTotal += Number(away.tactic==='defensive'?15:0) + Number(away.passFocus==='longBall'?10:0) - Number(home.pressType==='highPress'?10:0);
- awardByDifference(home,h,away,a,'defenseTotal',15,'3. Savunma üstünlüğü (taktik/pas/pres etkili)',addGoal);
- // 4. Ofansif orta saha + iki merkez orta saha toplam Overall; en az 15 fark.
+ winner=null;
+ if(h.defenseTotal-a.defenseTotal>=15){addGoal(home,h,'3. Savunma üstünlüğü (15+ DEF; bonuslar uygulandı)');winner=teamLabel(home)}
+ else if(a.defenseTotal-h.defenseTotal>=15){addGoal(away,a,'3. Savunma üstünlüğü (15+ DEF; bonuslar uygulandı)');winner=teamLabel(away)}
+ addAudit('3. Savunma üstünlüğü',h.defenseTotal,a.defenseTotal,15,hDefEffects.join(', ')||'Ek etki yok',aDefEffects.join(', ')||'Ek etki yok',winner);
+
+ // 4. Orta saha: Dengeli +15, Kısa Pas +10; rakibin Orta Blok Pres'i -10.
+ const hMidEffects=[home.tactic==='balanced'?'+15 Dengeli':'',home.passFocus==='shortPass'?'+10 Kısa Pas':'',away.pressType==='midBlock'?'−10 rakibin Orta Blok Pres’i':''].filter(Boolean);
+ const aMidEffects=[away.tactic==='balanced'?'+15 Dengeli':'',away.passFocus==='shortPass'?'+10 Kısa Pas':'',home.pressType==='midBlock'?'−10 rakibin Orta Blok Pres’i':''].filter(Boolean);
  h.midfieldTotal += Number(home.tactic==='balanced'?15:0) + Number(home.passFocus==='shortPass'?10:0) - Number(away.pressType==='midBlock'?10:0);
  a.midfieldTotal += Number(away.tactic==='balanced'?15:0) + Number(away.passFocus==='shortPass'?10:0) - Number(home.pressType==='midBlock'?10:0);
- awardByDifference(home,h,away,a,'midfieldTotal',15,'4. Orta saha Overall üstünlüğü (taktik/pas/pres etkili)',addGoal);
- // 5. Santrfor + sağ kanat + sol kanat toplam ATT; en az 15 fark.
+ winner=null;
+ if(h.midfieldTotal-a.midfieldTotal>=15){addGoal(home,h,'4. Orta saha Overall üstünlüğü (15+; bonuslar uygulandı)');winner=teamLabel(home)}
+ else if(a.midfieldTotal-h.midfieldTotal>=15){addGoal(away,a,'4. Orta saha Overall üstünlüğü (15+; bonuslar uygulandı)');winner=teamLabel(away)}
+ addAudit('4. Orta saha üstünlüğü',h.midfieldTotal,a.midfieldTotal,15,hMidEffects.join(', ')||'Ek etki yok',aMidEffects.join(', ')||'Ek etki yok',winner);
+
+ // 5. Hücum üçlüsü: Hücumcu +15, Kanat Oyunu +10; rakibin Geride Pres'i -10.
+ const hAtkEffects=[home.tactic==='attacking'?'+15 Hücumcu':'',home.passFocus==='wingPlay'?'+10 Kanat Oyunu':'',away.pressType==='deepBlock'?'−10 rakibin Geride Pres’i':''].filter(Boolean);
+ const aAtkEffects=[away.tactic==='attacking'?'+15 Hücumcu':'',away.passFocus==='wingPlay'?'+10 Kanat Oyunu':'',home.pressType==='deepBlock'?'−10 rakibin Geride Pres’i':''].filter(Boolean);
  h.attackTrioTotal += Number(home.tactic==='attacking'?15:0) + Number(home.passFocus==='wingPlay'?10:0) - Number(away.pressType==='deepBlock'?10:0);
  a.attackTrioTotal += Number(away.tactic==='attacking'?15:0) + Number(away.passFocus==='wingPlay'?10:0) - Number(home.pressType==='deepBlock'?10:0);
- awardByDifference(home,h,away,a,'attackTrioTotal',15,'5. Hücum üçlüsü üstünlüğü (taktik/pas/pres etkili)',addGoal);
- // 6. Ev sahibinin tüm ilk 11 toplam ATT puanı düşükse +20 uygulanır; sonra ATT toplamı yüksek olan +1 gol alır.
+ winner=null;
+ if(h.attackTrioTotal-a.attackTrioTotal>=15){addGoal(home,h,'5. Hücum üçlüsü üstünlüğü (15+ ATT; bonuslar uygulandı)');winner=teamLabel(home)}
+ else if(a.attackTrioTotal-h.attackTrioTotal>=15){addGoal(away,a,'5. Hücum üçlüsü üstünlüğü (15+ ATT; bonuslar uygulandı)');winner=teamLabel(away)}
+ addAudit('5. Hücum üçlüsü üstünlüğü',h.attackTrioTotal,a.attackTrioTotal,15,hAtkEffects.join(', ')||'Ek etki yok',aAtkEffects.join(', ')||'Ek etki yok',winner);
+
+ // 6. Ev sahibi ATT düşükse +20 telafi bonusu. Taktik/pas/pres bonusları bu kurala uygulanmaz.
  let adjustedHomeAttack=h.totalAttack;
+ let rule6HomeEffects='Taktik bonusu uygulanmaz',rule6AwayEffects='Taktik bonusu uygulanmaz';
  if(h.totalAttack<a.totalAttack){
-  adjustedHomeAttack+=20;
+  adjustedHomeAttack+=20;rule6HomeEffects='+20 ev sahibi telafi bonusu';
   events.push({minute:0,type:'bonus',team:home.id,playerId:null,playerName:'Ev sahibi bonusu',reason:'6. Ev sahibi toplam ATT düşük: +20 bonus',text:`ATT ${h.totalAttack} → ${adjustedHomeAttack}`});
  }
- if(adjustedHomeAttack>a.totalAttack)addGoal(home,h,'6. Bonus sonrası toplam Hücum (ATT) üstünlüğü');
- else if(a.totalAttack>adjustedHomeAttack)addGoal(away,a,'6. Bonus sonrası toplam Hücum (ATT) üstünlüğü');
+ winner=null;
+ if(adjustedHomeAttack>a.totalAttack){addGoal(home,h,'6. Bonus sonrası toplam Hücum (ATT) üstünlüğü');winner=teamLabel(home)}
+ else if(a.totalAttack>adjustedHomeAttack){addGoal(away,a,'6. Bonus sonrası toplam Hücum (ATT) üstünlüğü');winner=teamLabel(away)}
+ addAudit('6. Toplam hücum ve ev sahibi bonusu',adjustedHomeAttack,a.totalAttack,'Yüksek ATT değeri kazanır; eşitlikte gol yok',rule6HomeEffects,rule6AwayEffects,winner);
  events.sort((x,y)=>x.minute-y.minute);
- return {homeGoals,awayGoals,events};
+ return {homeGoals,awayGoals,events,ruleAudit,tacticsApplied:{home:{tactic:home.tactic||'balanced',passFocus:home.passFocus||'shortPass',pressType:home.pressType||'midBlock'},away:{tactic:away.tactic||'balanced',passFocus:away.passFocus||'shortPass',pressType:away.pressType||'midBlock'}}};
 }
 function scoreTeam(team){
  const squad=(team.squad||[]).filter(p=>p.starter!==false);
@@ -456,7 +486,7 @@ function passAccuracyPair(r){
 let dismissedMatchReportId=null;
 let lastSwapReportShown=null;
 let postDraftModalStage=null;
-function renderMatchReport(live,league){const box=$('matchReport');if(!box)return;if(!live||live.status!=='finished'){box.classList.add('hidden');return}const currentReportId=live.fixtureId||`${live.homeUid||live.homeName}-${live.awayUid||live.awayName}-${live.finishedAt||''}`;if(dismissedMatchReportId===currentReportId){box.classList.add('hidden');return}box.classList.remove('hidden');box.classList.add('match-report-modal');const r=live.stats||(live.fixtureId?(league?.results||{})[live.fixtureId]:null);if(!r){box.innerHTML='<div class="empty-state">Maç özeti bulunamadı.</div>';return}const goals=(r.events||[]).filter(e=>e.type==='goal').sort((a,b)=>a.minute-b.minute);const teamName=e=>e.team===live.homeUid?live.homeName:e.team===live.awayUid?live.awayName:'';box.innerHTML=`<button type="button" class="match-report-close" aria-label="Maç özetini kapat">×</button><div class="eyebrow">ÇARK FUTBOL · MAÇ ÖZETİ</div><div class="match-report-head"><h2>${esc(live.homeName)} ${r.homeGoals} – ${r.awayGoals} ${esc(live.awayName)}</h2><div class="live-score"><span>${r.homeGoals}</span><i>–</i><span>${r.awayGoals}</span></div></div><h3>Goller</h3><div class="arena-event-list">${goals.map(e=>`<div class="arena-event"><b>${e.minute}'</b><span>⚽ ${esc(e.playerName||'Bilinmeyen oyuncu')}</span><small>${esc(teamName(e))}</small></div>`).join('')||'<p class="muted">Gol olmadı.</p>'}</div>`;box.querySelector('.match-report-close').onclick=()=>{dismissedMatchReportId=currentReportId;box.classList.add('hidden')};}
+function renderMatchReport(live,league){const box=$('matchReport');if(!box)return;if(!live||live.status!=='finished'){box.classList.add('hidden');return}const currentReportId=live.fixtureId||`${live.homeUid||live.homeName}-${live.awayUid||live.awayName}-${live.finishedAt||''}`;if(dismissedMatchReportId===currentReportId){box.classList.add('hidden');return}box.classList.remove('hidden');box.classList.add('match-report-modal');const r=live.stats||(live.fixtureId?(league?.results||{})[live.fixtureId]:null);if(!r){box.innerHTML='<div class="empty-state">Maç özeti bulunamadı.</div>';return}const goals=(r.events||[]).filter(e=>e.type==='goal').sort((a,b)=>a.minute-b.minute);const teamName=e=>e.team===live.homeUid?live.homeName:e.team===live.awayUid?live.awayName:'';const auditRows=(r.ruleAudit||[]).map(a=>`<tr><td>${esc(a.rule)}</td><td>${esc(a.homeValue)}</td><td>${esc(a.awayValue)}</td><td>${esc(a.homeEffects||'')}</td><td>${esc(a.awayEffects||'')}</td><td>${esc(a.winner||'Gol yok')}</td></tr>`).join('');const tactics=r.tacticsApplied?`<p class="muted"><b>Taktikler:</b> ${esc(live.homeName)} — ${esc(r.tacticsApplied.home.tactic)} / ${esc(r.tacticsApplied.home.passFocus)} / ${esc(r.tacticsApplied.home.pressType)} · ${esc(live.awayName)} — ${esc(r.tacticsApplied.away.tactic)} / ${esc(r.tacticsApplied.away.passFocus)} / ${esc(r.tacticsApplied.away.pressType)}</p>`:'';box.innerHTML=`<button type="button" class="match-report-close" aria-label="Maç özetini kapat">×</button><div class="eyebrow">ÇARK FUTBOL · MAÇ ÖZETİ</div><div class="match-report-head"><h2>${esc(live.homeName)} ${r.homeGoals} – ${r.awayGoals} ${esc(live.awayName)}</h2><div class="live-score"><span>${r.homeGoals}</span><i>–</i><span>${r.awayGoals}</span></div></div>${tactics}<h3>Gol kuralı ve bonus dökümü</h3><div style="overflow-x:auto"><table><thead><tr><th>Kural</th><th>${esc(live.homeName)} puanı</th><th>${esc(live.awayName)} puanı</th><th>${esc(live.homeName)} etkileri</th><th>${esc(live.awayName)} etkileri</th><th>Gol kazananı</th></tr></thead><tbody>${auditRows||'<tr><td colspan="6">Bu maç eski sürümde oynanmış; kural dökümü kayıtlı değil.</td></tr>'}</tbody></table></div><h3>Goller</h3><div class="arena-event-list">${goals.map(e=>`<div class="arena-event"><b>${e.minute}'</b><span>⚽ ${esc(e.playerName||'Bilinmeyen oyuncu')}</span><small>${esc(teamName(e))} · ${esc(e.reason||'')}</small></div>`).join('')||'<p class="muted">Gol olmadı.</p>'}</div>`;box.querySelector('.match-report-close').onclick=()=>{dismissedMatchReportId=currentReportId;box.classList.add('hidden')};}
 function renderLeague(){if(!room)return;const league=room.league||{},fixtures=league.fixtures||[],results=league.results||{};renderMatchReport(league.liveMatch,league);const played=fixtures.filter(m=>results[m.id]).length;$('leagueName').value=league.name||'Çark Futbol Ligi';$('createFixturesBtn').disabled=!(isAdmin()||room.ownerUid===user.uid)||room.status!=='finished'||room.postDraftPhase!=='complete'||fixtures.length>0;$('saveLeagueNameBtn').disabled=!(isAdmin()||room.ownerUid===user.uid);$('leagueStats').innerHTML=[['TAKIM',room.memberOrder.length],['TOPLAM MAÇ',fixtures.length||'—'],['OYNANAN',`${played}/${fixtures.length||0}`],['AŞAMA',played===fixtures.length&&fixtures.length?'Tamamlandı':played?'Devam ediyor':'Hazır değil']].map(([a,b])=>`<div class="stat"><small>${a}</small><b>${b}</b></div>`).join('');const rows=standings();$('standings').innerHTML=rows.length?`<table><thead><tr><th>#</th><th>Takım</th><th>O</th><th>G</th><th>B</th><th>M</th><th>AG</th><th>YG</th><th>AV</th><th>P</th></tr></thead><tbody>${rows.map((t,i)=>`<tr class="${i===0&&played===fixtures.length&&fixtures.length?'champion':''}"><td>${i===0&&played===fixtures.length&&fixtures.length?'🏆':i+1}</td><td>${esc(t.name)}</td><td>${t.played}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gf-t.ga}</td><td><b>${t.pts}</b></td></tr>`).join('')}</tbody></table>`:'<div class="empty-state">Lig puan tablosu için kadrolar tamamlanmalı.</div>';$('fixtureProgress').textContent=fixtures.length?`${played}/${fixtures.length} maç`:'Fikstür yok';if(!fixtures.length){$('fixtures').innerHTML='<div class="empty-state">İlk 11 tamamlandıktan sonra admin fikstürü oluşturabilir.</div>';return}const names=Object.fromEntries(rows.map(t=>[t.id,t.name]));$('fixtures').innerHTML=fixtures.map(m=>{const r=results[m.id];const adminCan=(isAdmin()||room.ownerUid===user.uid)&&!r;return `<div class="fixture"><div class="fixture-meta">${m.leg===1?'1. AŞAMA':'2. AŞAMA'} · ${m.round}. hafta</div><div class="fixture-main"><span>${esc(names[m.homeUid]||userName(m.homeUid))}</span><b>${r?`${r.homeGoals} – ${r.awayGoals}`:'vs'}</b><span>${esc(names[m.awayUid]||userName(m.awayUid))}</span></div>${r?`<button class="btn small secondary" data-open-report="${m.id}">Gol özeti</button>`:''}${adminCan?`<button class="btn small primary" data-sim="${m.id}">Maçı simüle et</button>`:''}</div>`}).join('');document.querySelectorAll('[data-sim]').forEach(b=>b.onclick=()=>simulateOne(b.dataset.sim));document.querySelectorAll('[data-open-report]').forEach(b=>b.onclick=()=>{const id=b.dataset.openReport,match=(room?.league?.fixtures||[]).find(x=>x.id===id),r=(room?.league?.results||{})[id];if(!match||!r){msg('Bu maçın raporu bulunamadı.',true);return}dismissedMatchReportId=null;const live={fixtureId:id,status:'finished',homeUid:match.homeUid,awayUid:match.awayUid,homeName:userName(match.homeUid),awayName:userName(match.awayUid),homeGoals:r.homeGoals,awayGoals:r.awayGoals,minute:90,stats:r};renderMatchReport(live,room.league);});}
 async function createFixtures(){if(!room)return;const teams=room.memberOrder||[];if(room.status!=='finished'||room.postDraftPhase!=='complete'||teams.some(id=>starterCount(room.picks||[],id)!==11)){msg('Her oyuncunun 11 futbolcusu tamamlanmalı.',true);return}try{await runTransaction(db,async tx=>{const s=await tx.get(roomRef),d=s.data();if(d.league?.fixtures?.length)throw new Error('Fikstür zaten oluşturulmuş.');const fixtures=buildFixtures(d.memberOrder);tx.update(roomRef,{league:{name:$('leagueName').value.trim()||'Çark Futbol Ligi',fixtures,results:{},createdAt:Date.now()},updatedAt:serverTimestamp()})});msg('Çift devreli fikstür oluşturuldu.')}catch(e){msg(e.message,true)}}
 async function simulateOne(id){try{await runTransaction(db,async tx=>{const snap=await tx.get(roomRef),d=snap.data();if(!(user.uid===ADMIN_UID||user.uid===d.ownerUid))throw new Error('Maçları yalnızca admin veya oda sahibi başlatabilir.');const league=d.league||{},m=(league.fixtures||[]).find(x=>x.id===id);if(!m)throw new Error('Maç bulunamadı.');if(league.results?.[id])throw new Error('Bu maç zaten oynandı.');const makeTeam=uid=>({id:uid,name:d.members?.[uid]?.name||'Menajer',squad:(d.picks||[]).filter(p=>p.uid===uid).map(p=>({...p,starter:p.starterIndex!==undefined&&p.starterIndex!==null})),...(d.tactics?.[uid]||{})});const home=makeTeam(m.homeUid),away=makeTeam(m.awayUid),result=simulateMatch(home,away),results={...(league.results||{}),[id]:{...result,playedAt:Date.now()}};tx.update(roomRef,{'league.results':results,'league.liveMatch':{fixtureId:id,status:'finished',homeUid:m.homeUid,awayUid:m.awayUid,homeName:home.name,awayName:away.name,homeGoals:result.homeGoals,awayGoals:result.awayGoals,minute:90,stats:result,finishedAt:Date.now()},updatedAt:serverTimestamp()})});msg('Maç tamamlandı. Skor ve gol özeti kaydedildi.')}catch(e){msg(e.message||'Maç simülasyonu sırasında hata oluştu.',true)}}
