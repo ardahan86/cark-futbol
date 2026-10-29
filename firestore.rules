@@ -46,7 +46,8 @@ service cloud.firestore {
           'picks','pendingPick','turnIndex','status','draftStage','lastSpin','lastSpinAnnouncement','protectionRights','swapRights',
           'protectionRightsEarned','swapRightsEarned','lastPickAnnouncement','tactics','league','turnStartedAt','updatedAt',
           // Post-draft protection and swap workflow fields used by the app.
-          'protectionDone','postDraftPhase','swapConfirmed','swapRequests','swapResolved','swapResults'
+          'protectionDone','postDraftPhase','swapConfirmed','swapRequests','swapResolved','swapResults',
+          'tacticsConfirmed'
         ])
       );
       allow delete: if isAdmin();
