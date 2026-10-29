@@ -1,18 +1,18 @@
-ÇARK FUTBOL - KORUMA / TAKAS GÜNCELLEMESİ
+ÇARK FUTBOL - GOL KURALLARI, TAKTİK, PAS ODAĞI VE PRES GÜNCELLEMESİ
 
 Kontroller:
-- app.js JavaScript sözdizimi: BAŞARILI
-- players.json oyuncu sayısı: 300
-- Çark dilimi sayısı: 23
-- Kulüp dilimi: 15
-- PAS dilimi: 2
-- KORUMA dilimi: 4
-- TAKAS dilimi: 2
-- Firestore koruma kaydı: yalnızca kadrolar tamamlandığında yazılabilir; en fazla 3 oyuncu.
+- app.js JavaScript sözdizimi: BAŞARILI (node --check)
+- players.json futbolcu havuzu: 300 futbolcu
+- Gol motoru: 6 bağımsız kural
+- Taktik seçenekleri: Defansif, Dengeli, Hücumcu
+- Pas odağı seçenekleri: Savunmadan Uzun Top, Kısa Pas, Kanat Oyunu
+- Pres türleri: Önde Pres, Orta Blok Pres, Geride Pres
+- Bonus ve cezalar yalnızca 3., 4. ve 5. kuralların karşılaştırma değerlerinde uygulanır.
+- Gerçek futbolcu puanları ve genel Overall toplamı bonuslardan etkilenmez.
 - Gerçek Firebase ortamında uçtan uca test yapılmadı.
 
 Kurulum:
-1. ZIP içindeki app.js, firestore.rules ve KURALLAR.md dosyalarını depo kök dizinindeki karşılıklarıyla değiştir.
-2. players.json, index.html, styles.css ve firebase-config.js dosyalarını değiştirme.
-3. firestore.rules içeriğini Firebase Console > Firestore Database > Rules bölümünde yayınla.
-4. GitHub Pages'i yenile ve önce bir test odasında dene.
+1. ZIP içindeki dosyaları projenin mevcut dosyalarıyla değiştirerek yayımlayın.
+2. Firebase yapılandırmasını ve Firestore kurallarını mevcut projenizle aynı bırakın; bu güncelleme bunları değiştirmez.
+3. GitHub Pages veya kullandığınız barındırma ortamında siteyi yenileyin.
+4. Önce test odasında taktik, pas odağı ve pres türü seçimlerinin kaydedildiğini ve maç raporlarında doğru gol kurallarının kullanıldığını doğrulayın.
